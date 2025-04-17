@@ -1,6 +1,7 @@
 package cz.itnetwork.service;
 
 import cz.itnetwork.dto.InvoiceDTO;
+import cz.itnetwork.dto.InvoiceStatisticsDTO;
 import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.mapper.InvoiceMapper;
 import cz.itnetwork.entity.InvoiceEntity;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -135,6 +137,25 @@ public class InvoiceServiceImpl implements  InvoiceService {
     public void remove(Long id) {
         InvoiceEntity invoice = fetchedInvoiceById(id);
         invoiceRepository.delete(invoice);
+    }
+
+    @Override
+    public InvoiceStatisticsDTO getStatistics() {
+        BigDecimal currentYearSum = invoiceRepository.sumPricesForCurrentYear();
+        BigDecimal allTimeSum = invoiceRepository.allTimeSum();
+        long count = invoiceRepository.count();
+
+        BigDecimal currentSum = currentYearSum;
+        if(currentSum == null){
+            currentSum = BigDecimal.ZERO;
+        }
+
+        BigDecimal allSum = allTimeSum;
+        if(allSum == null){
+            allTimeSum = BigDecimal.ZERO;
+        }
+
+        return new InvoiceStatisticsDTO(currentSum, allTimeSum, count);
     }
 
     /**

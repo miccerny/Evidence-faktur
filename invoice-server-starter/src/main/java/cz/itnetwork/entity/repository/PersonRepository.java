@@ -21,16 +21,29 @@
  */
 package cz.itnetwork.entity.repository;
 
+import cz.itnetwork.dto.PersonStatisticDTO;
 import cz.itnetwork.entity.PersonEntity;
+import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+@EnableJpaRepositories
 public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
     List<PersonEntity> findByHidden(boolean hidden);
 
     Optional<PersonEntity> findByIdentificationNumber(String identificationNumber);
 
+    @Query(value = """
+    SELECT p.id AS personId, p.name AS personName, IFNULL(SUM(i.price), 0) AS revenue
+    FROM person p
+    LEFT JOIN invoice i ON p.id = i.seller_id
+    GROUP BY p.id, p.name
+    """, nativeQuery = true)
+    List<Tuple> getPersonSumPrice();
 }

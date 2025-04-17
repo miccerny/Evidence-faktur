@@ -1,9 +1,11 @@
 package cz.itnetwork.controller;
 
 import cz.itnetwork.dto.InvoiceDTO;
+import cz.itnetwork.dto.InvoiceStatisticsDTO;
 import cz.itnetwork.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,5 +66,15 @@ public class InvoiceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeInvoice(@PathVariable Long invoiceId){
         invoiceService.remove(invoiceId);
+    }
+
+    /**
+     *
+     * @return
+     */
+    @GetMapping({"/invoices/statistics/", "/invoices/statistics"})
+    public ResponseEntity<InvoiceStatisticsDTO> getStatistics(){
+        InvoiceStatisticsDTO statisticsDTO = invoiceService.getStatistics();
+        return ResponseEntity.ok(statisticsDTO);
     }
 }

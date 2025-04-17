@@ -22,15 +22,20 @@
 package cz.itnetwork.service;
 
 import cz.itnetwork.dto.PersonDTO;
+import cz.itnetwork.dto.PersonStatisticDTO;
 import cz.itnetwork.dto.mapper.PersonMapper;
 import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.repository.PersonRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,6 +115,23 @@ public class PersonServiceImpl implements PersonService {
 
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
+    public List<PersonStatisticDTO> getPersonStatistic(){
+        List<Tuple> tuples;
+        tuples = personRepository.getPersonSumPrice();
+
+        return tuples.stream()
+                .map(tuple -> new PersonStatisticDTO(
+                        tuple.get("personId", Long.class),
+                        tuple.get("personName", String.class),
+                        tuple.get("revenue", BigDecimal.class)
+                ))
+                .collect(Collectors.toList());
+    }
 
     // region: Private methods
     /**
