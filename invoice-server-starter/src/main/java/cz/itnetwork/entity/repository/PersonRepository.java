@@ -39,6 +39,10 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
     Optional<PersonEntity> findByIdentificationNumber(String identificationNumber);
 
+    /**
+     *
+     * @return
+     */
     @Query(value = """
     SELECT p.id AS personId, p.name AS personName, IFNULL(SUM(i.price), 0) AS revenue
     FROM person p

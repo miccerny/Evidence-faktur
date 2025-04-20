@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/identification")
+@RequestMapping("/api/identification/{identificationNumber}")
 public class IdentificationController {
 
     @Autowired
@@ -22,7 +22,7 @@ public class IdentificationController {
      * @param identificationNumber
      * @return
      */
-    @GetMapping({"/{identificationNumber}/sales/", "/{identificationNumber}/sales"})
+    @GetMapping({"/sales/", "sales"})
     public List<InvoiceDTO> getAllSalesByIdentificationNumber(@PathVariable String identificationNumber){
         return invoiceService.getAllSalesByIdentificationNumber(identificationNumber);
     }
@@ -32,7 +32,7 @@ public class IdentificationController {
      * @param identificationNumber
      * @return
      */
-    @GetMapping({"/{identificationNumber}/purchases/", "/{identificationNumber}/purchases"})
+    @GetMapping({"/purchases/", "/purchases"})
     public List<InvoiceDTO> getAllPurchasesIdentificationNumber(@PathVariable String identificationNumber){
         return invoiceService.getAllPurchasesByIdentificationNumber(identificationNumber);
     }

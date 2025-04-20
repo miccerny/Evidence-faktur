@@ -30,10 +30,25 @@ public interface PersonService {
      */
     List<PersonDTO> getAll();
 
+    /**
+     *
+     * @param personId
+     * @return
+     */
     PersonDTO getPerson(Long personId);
 
+    /**+
+     *
+     * @param personId
+     * @param personDTO
+     * @return
+     */
     PersonDTO updatePerson(Long personId, PersonDTO personDTO);
 
+    /**
+     *
+     * @return
+     */
     List<PersonStatisticDTO> getPersonStatistic();
 
 }

@@ -13,10 +13,24 @@ import java.util.List;
 @Repository
 public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
 
+    /**
+     *
+     * @return
+     */
     List<InvoiceEntity> findAll();
 
+    /**
+     *
+     * @param identificationNUmber
+     * @return
+     */
     List<InvoiceEntity> findBySellerIdentificationNumber(String identificationNUmber);
 
+    /**
+     *
+     * @param identificationNumber
+     * @return
+     */
     List<InvoiceEntity> findByBuyerIdentificationNumber(String identificationNumber);
 
     /**

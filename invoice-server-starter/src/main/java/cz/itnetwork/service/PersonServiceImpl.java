@@ -90,7 +90,9 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public PersonDTO getPerson(Long personId) {
         PersonEntity entity = fetchPersonById(personId);
-        return personMapper.toDTO(entity);
+            return personMapper.toDTO(entity);
+
+
     }
 
     /**

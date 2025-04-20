@@ -31,9 +31,24 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface PersonMapper {
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     PersonEntity toEntity(PersonDTO source);
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     PersonDTO toDTO(PersonEntity source);
 
+    /**
+     *
+     * @param source
+     * @param person
+     */
     void updateEntity(PersonDTO source, @MappingTarget PersonEntity person);
 }

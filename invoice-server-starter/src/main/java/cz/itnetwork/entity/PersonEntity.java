@@ -28,7 +28,9 @@ import lombok.Setter;
 
 import java.util.List;
 
-
+/**
+ *
+ */
 @Entity(name = "person")
 @Getter
 @Setter
@@ -37,6 +39,7 @@ public class PersonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
 
     @Column(nullable = false)
     private String name;

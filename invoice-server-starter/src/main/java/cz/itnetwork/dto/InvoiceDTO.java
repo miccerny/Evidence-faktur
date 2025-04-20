@@ -16,6 +16,7 @@ public class InvoiceDTO {
     @JsonProperty("_id")
     private Long id;
 
+
     private String invoiceNumber;
     private PersonDTO seller;
     private PersonDTO buyer;

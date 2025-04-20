@@ -1,5 +1,6 @@
 package cz.itnetwork.service;
 
+import cz.itnetwork.constant.InvoiceRelationType;
 import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.InvoiceStatisticsDTO;
 import cz.itnetwork.dto.PersonDTO;
@@ -36,13 +37,7 @@ public class InvoiceServiceImpl implements  InvoiceService {
      */
     @Override
     public InvoiceDTO createInvoice(InvoiceDTO invoiceDTO) {
-        InvoiceEntity invoice = invoiceMapper.toEntity(invoiceDTO);
-
-        PersonEntity seller = personRepository.getReferenceById(invoice.getSeller().getId());
-        PersonEntity buyer = personRepository.getReferenceById(invoice.getBuyer().getId());
-
-        invoice.setSeller(seller);
-        invoice.setBuyer(buyer);
+        InvoiceEntity invoice = prepareInvoiceEntity(invoiceDTO, null);
 
         InvoiceEntity save = invoiceRepository.save(invoice);
         return invoiceMapper.toDTO(save);
@@ -66,14 +61,7 @@ public class InvoiceServiceImpl implements  InvoiceService {
      */
     @Override
     public List<InvoiceDTO> getAllPurchasesByIdentificationNumber(String identificationNumber) {
-        PersonEntity person = personRepository.findByIdentificationNumber(identificationNumber)
-                .orElseThrow(() -> new NotFoundException("Person with identification number " + identificationNumber + " wasn't found."));
-
-        List<InvoiceEntity> invoiceEntities = invoiceRepository.findByBuyerIdentificationNumber(identificationNumber);
-
-        return invoiceEntities.stream()
-                .map(invoiceEntity -> invoiceMapper.toDTO(invoiceEntity))
-                .collect(Collectors.toList());
+        return getInvoiceByIdentificationNumber(identificationNumber, InvoiceRelationType.BUYER);
 
     }
 
@@ -84,16 +72,7 @@ public class InvoiceServiceImpl implements  InvoiceService {
      */
     @Override
     public List<InvoiceDTO> getAllSalesByIdentificationNumber(String identificationNumber) {
-        PersonEntity person = personRepository.findByIdentificationNumber(identificationNumber)
-                .orElseThrow(() -> new NotFoundException("Person with identification number " + identificationNumber + " wasn't found."));
-
-        // Vyhledáme faktury, které vystavila tato osoba
-        List<InvoiceEntity> invoices = invoiceRepository.findBySellerIdentificationNumber(identificationNumber);
-
-        // Mapa na DTO pro klienta
-        return invoices.stream()
-                .map(invoice -> invoiceMapper.toDTO(invoice))
-                .collect(Collectors.toList());
+        return getInvoiceByIdentificationNumber(identificationNumber, InvoiceRelationType.SELLER);
     }
 
 
@@ -116,15 +95,8 @@ public class InvoiceServiceImpl implements  InvoiceService {
      */
     @Override
     public InvoiceDTO updateInvoice(Long id, InvoiceDTO invoiceDTO) {
-        InvoiceEntity invoice = fetchedInvoiceById(id);
-
-        PersonEntity seller = personRepository.getReferenceById(invoice.getSeller().getId());
-        PersonEntity buyer = personRepository.getReferenceById(invoice.getBuyer().getId());
-
-        invoice.setSeller(seller);
-        invoice.setBuyer(buyer);
-        invoice = invoiceMapper.toEntity(invoiceDTO);
-        invoice.setId(id);
+        fetchedInvoiceById(id);
+        InvoiceEntity invoice = prepareInvoiceEntity(invoiceDTO, id);
         InvoiceEntity saved = invoiceRepository.save(invoice);
         return invoiceMapper.toDTO(saved);
     }
@@ -139,6 +111,10 @@ public class InvoiceServiceImpl implements  InvoiceService {
         invoiceRepository.delete(invoice);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public InvoiceStatisticsDTO getStatistics() {
         BigDecimal currentYearSum = invoiceRepository.sumPricesForCurrentYear();
@@ -171,8 +147,47 @@ public class InvoiceServiceImpl implements  InvoiceService {
         }
     }
 
-    private PersonEntity fecthedIdentificationNumber(String identificationNumber){
-        return null;
+    /**
+     *
+     * @param invoiceDTO
+     * @param id
+     * @return
+     */
+    private InvoiceEntity prepareInvoiceEntity(InvoiceDTO invoiceDTO, Long id){
+        InvoiceEntity invoice = invoiceMapper.toEntity(invoiceDTO);
+
+        PersonEntity seller = personRepository.getReferenceById(invoice.getSeller().getId());
+        PersonEntity buyer = personRepository.getReferenceById(invoice.getBuyer().getId());
+
+        invoice.setSeller(seller);
+        invoice.setBuyer(buyer);
+
+        if (id != null) {
+            invoice.setId(id);
+        }
+
+        return invoice;
+    }
+
+    /**
+     *
+     * @param identificationNumber
+     * @param type
+     * @return
+     */
+    private List<InvoiceDTO> getInvoiceByIdentificationNumber(String identificationNumber, InvoiceRelationType type){
+        personRepository.findByIdentificationNumber(identificationNumber)
+                .orElseThrow(()-> new NotFoundException("Person with identification number" + identificationNumber + " wasn't found. "));
+
+        List<InvoiceEntity> invoiceEntities;
+        if(type == InvoiceRelationType.BUYER){
+            invoiceEntities = invoiceRepository.findByBuyerIdentificationNumber(identificationNumber);
+        }else {
+            invoiceEntities = invoiceRepository.findBySellerIdentificationNumber(identificationNumber);
+        }
+        return invoiceEntities.stream()
+                .map(invoiceMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
 

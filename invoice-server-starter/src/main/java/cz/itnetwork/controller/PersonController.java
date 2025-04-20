@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/persons")
 public class PersonController {
 
     @Autowired
@@ -41,7 +41,7 @@ public class PersonController {
      * @param personDTO
      * @return
      */
-    @PostMapping("/persons")
+    @PostMapping("")
     public PersonDTO addPerson(@RequestBody PersonDTO personDTO) {
         return  personService.addPerson(personDTO);
     }
@@ -50,7 +50,7 @@ public class PersonController {
      *
      * @return
      */
-    @GetMapping("/persons")
+    @GetMapping("")
     public List<PersonDTO> getPersons() {
         return personService.getAll();
     }
@@ -59,7 +59,7 @@ public class PersonController {
      *
      * @param personId
      */
-    @DeleteMapping("/persons/{personId}")
+    @DeleteMapping("/{personId}")
     public void deletePerson(@PathVariable Long personId) {
         personService.removePerson(personId);
     }
@@ -69,7 +69,7 @@ public class PersonController {
      * @param personId
      * @return
      */
-    @GetMapping("/persons/{personId}")
+    @GetMapping("/{personId}")
     public PersonDTO getPerson(@PathVariable Long personId){
         return personService.getPerson(personId);
     }
@@ -80,12 +80,16 @@ public class PersonController {
      * @param personDTO
      * @return
      */
-    @PutMapping("/persons/{personId}")
+    @PutMapping("/{personId}")
     public PersonDTO updatePerson(@PathVariable Long personId, @RequestBody PersonDTO personDTO){
         return personService.updatePerson(personId, personDTO);
     }
 
-    @GetMapping({"/persons/statistics/","/persons/statistics"})
+    /**
+     *
+     * @return
+     */
+    @GetMapping({"/statistics/","/statistics"})
     public List<PersonStatisticDTO> getPersonStatistics(){
         return personService.getPersonStatistic();
     }

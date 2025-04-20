@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/invoices")
 public class InvoiceController {
 
     @Autowired
@@ -23,7 +23,7 @@ public class InvoiceController {
      * @param invoiceDTO
      * @return
      */
-    @PostMapping("/invoices")
+    @PostMapping("")
     public InvoiceDTO createInvoice(@RequestBody InvoiceDTO invoiceDTO){
         return invoiceService.createInvoice(invoiceDTO);
     }
@@ -32,7 +32,7 @@ public class InvoiceController {
      *
      * @return
      */
-    @GetMapping({"/invoices", "/invoices/"})
+    @GetMapping({"", "/"})
     public List<InvoiceDTO> getAll(){
         return invoiceService.getAll();
     }
@@ -42,7 +42,7 @@ public class InvoiceController {
      * @param invoiceId
      * @return
      */
-    @GetMapping({"/invoices/{invoiceId}/", "invoices/{invoiceId}"})
+    @GetMapping({"/{invoiceId}/", "/{invoiceId}"})
     public InvoiceDTO getInvoice(@PathVariable Long invoiceId){
         return invoiceService.getInvoice(invoiceId);
     }
@@ -53,7 +53,7 @@ public class InvoiceController {
      * @param invoiceDTO
      * @return
      */
-    @PutMapping({"/invoices/{invoiceId}/","/invoices/{invoiceId}"})
+    @PutMapping({"/{invoiceId}/","/{invoiceId}"})
     public InvoiceDTO updateInvoice(@PathVariable Long invoiceId, @RequestBody InvoiceDTO invoiceDTO){
         return invoiceService.updateInvoice(invoiceId, invoiceDTO);
     }
@@ -62,7 +62,7 @@ public class InvoiceController {
      *
      * @param invoiceId
      */
-    @DeleteMapping({"/invoices/{invoiceId}", "/invoices/{invoiceId}/"})
+    @DeleteMapping({"/{invoiceId}", "/{invoiceId}/"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeInvoice(@PathVariable Long invoiceId){
         invoiceService.remove(invoiceId);
@@ -72,7 +72,7 @@ public class InvoiceController {
      *
      * @return
      */
-    @GetMapping({"/invoices/statistics/", "/invoices/statistics"})
+    @GetMapping({"/statistics/", "/statistics"})
     public ResponseEntity<InvoiceStatisticsDTO> getStatistics(){
         InvoiceStatisticsDTO statisticsDTO = invoiceService.getStatistics();
         return ResponseEntity.ok(statisticsDTO);
