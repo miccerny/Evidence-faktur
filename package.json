@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "scripts": {
+  "start": "concurrently \"npm run start-client\" \"npm run start-backend\"",
+  "start-react": "react-scripts start",
+  "start-backend": "cd ../invoice-serve-starter && ./mvnw spring-boot:run"
+}
+}

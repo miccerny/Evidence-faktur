@@ -20,14 +20,15 @@
  * Více informací na http://www.itnetwork.cz/licence
  */
 
-import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-import {apiGet} from "../utils/api";
+import { apiGet } from "../utils/api";
 import Country from "./Country";
 
 const PersonDetail = () => {
-    const {id} = useParams();
+    const { id } = useParams();
     const [person, setPerson] = useState({});
 
     useEffect(() => {
@@ -35,10 +36,10 @@ const PersonDetail = () => {
             .then(data => {
                 setPerson(data);
             })
-            .catch(error =>{
+            .catch(error => {
                 console.error(error);
             });
-            
+
     }, [id]);
     const country = Country.CZECHIA === person.country ? "Česká republika" : "Slovensko";
 
@@ -46,37 +47,47 @@ const PersonDetail = () => {
         <>
             <div>
                 <h1>Detail osoby</h1>
-                <hr/>
+                <hr />
+
+                    <div>
+                        <Link to={`/purchasesAndSales/show/${person.identificationNumber}/sales`}>
+                            <button className="btn btn-primary">Vystavené faktury</button>
+                        </Link>
+                        <Link to={`/purchasesAndSales/show/${person.identificationNumber}/purchases`}>
+                            <button className="btn btn-primary ms-3">Přijaté faktury</button>
+                        </Link>
+                    </div>
+                
                 <h3>{person.name} ({person.identificationNumber})</h3>
                 <p>
                     <strong>DIČ:</strong>
-                    <br/>
+                    <br />
                     {person.taxNumber}
                 </p>
                 <p>
                     <strong>Bankovní účet:</strong>
-                    <br/>
+                    <br />
                     {person.accountNumber}/{person.bankCode} ({person.iban})
                 </p>
                 <p>
                     <strong>Tel.:</strong>
-                    <br/>
+                    <br />
                     {person.telephone}
                 </p>
                 <p>
                     <strong>Mail:</strong>
-                    <br/>
+                    <br />
                     {person.mail}
                 </p>
                 <p>
                     <strong>Sídlo:</strong>
-                    <br/>
+                    <br />
                     {person.street}, {person.city},
                     {person.zip}, {country}
                 </p>
                 <p>
                     <strong>Poznámka:</strong>
-                    <br/>
+                    <br />
                     {person.note}
                 </p>
             </div>

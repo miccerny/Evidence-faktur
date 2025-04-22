@@ -99,7 +99,7 @@ const PersonForm = () => {
                     name="personName"
                     min="3"
                     label="Jméno"
-                    prompt="Zadejte celé jméno"
+                    prompt="Jméno např. ITnetwork s.r.o."
                     value={person.name}
                     handleChange={(e) => {
                         setPerson({...person, name: e.target.value});
