@@ -57,7 +57,7 @@ const PersonDetail = () => {
                             <button className="btn btn-primary ms-3">Přijaté faktury</button>
                         </Link>
                     </div>
-                
+                <hr />
                 <h3>{person.name} ({person.identificationNumber})</h3>
                 <p>
                     <strong>DIČ:</strong>
@@ -67,7 +67,11 @@ const PersonDetail = () => {
                 <p>
                     <strong>Bankovní účet:</strong>
                     <br />
-                    {person.accountNumber}/{person.bankCode} ({person.iban})
+                    {person.accountNumber}/{person.bankCode} 
+                </p>
+                <p>
+                    <strong>IBAN:</strong><br/>
+                    ({person.iban})
                 </p>
                 <p>
                     <strong>Tel.:</strong>
@@ -82,7 +86,7 @@ const PersonDetail = () => {
                 <p>
                     <strong>Sídlo:</strong>
                     <br />
-                    {person.street}, {person.city},
+                    {person.street}, {person.city} <br/>
                     {person.zip}, {country}
                 </p>
                 <p>

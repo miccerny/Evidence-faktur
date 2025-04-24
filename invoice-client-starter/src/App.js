@@ -36,6 +36,8 @@ import PersonForm from "./persons/PersonForm";
 import InvoiceIndex from "./invoices/InvoiceIndex";
 import PurchasesInvoice from "./persons/purchasesAndSales/PurchasesInvoice";
 import SalesInvoice from "./persons/purchasesAndSales/SalesInvoice";
+import InvoiceDetail from "./invoices/InvoiceDetail";
+import InvoiceForm from "./invoices/InvoiceForm";
 
 export function App() {
   return (
@@ -72,9 +74,9 @@ export function App() {
         <Route index element={<Navigate to={"/invoices"}/>}/>
           <Route path="/invoices">
             <Route index element={<InvoiceIndex />}/>
-            <Route path="show/:id" />
-            <Route path="create" />
-            <Route path="edit/:id" />
+            <Route path="show/:id" element={<InvoiceDetail/> } />
+            <Route path="create" element={<InvoiceForm />} />
+            <Route path="edit/:id" element={<InvoiceForm />}/>
           </Route>
           
         </Routes>
