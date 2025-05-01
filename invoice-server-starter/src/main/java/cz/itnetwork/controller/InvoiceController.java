@@ -2,6 +2,7 @@ package cz.itnetwork.controller;
 
 import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.InvoiceStatisticsDTO;
+import cz.itnetwork.entity.filtration.InvoiceFilter;
 import cz.itnetwork.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,8 +34,8 @@ public class InvoiceController {
      * @return
      */
     @GetMapping({"", "/"})
-    public List<InvoiceDTO> getAll(){
-        return invoiceService.getAll();
+    public List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter){
+        return invoiceService.getAll(invoiceFilter);
     }
 
     /**

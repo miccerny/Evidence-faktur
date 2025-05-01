@@ -7,10 +7,13 @@ import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.mapper.InvoiceMapper;
 import cz.itnetwork.entity.InvoiceEntity;
 import cz.itnetwork.entity.PersonEntity;
+import cz.itnetwork.entity.filtration.InvoiceFilter;
 import cz.itnetwork.entity.repository.InvoiceRepository;
 import cz.itnetwork.entity.repository.PersonRepository;
+import cz.itnetwork.entity.repository.specification.InvoiceSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -48,9 +51,12 @@ public class InvoiceServiceImpl implements  InvoiceService {
      * @return
      */
     @Override
-    public List<InvoiceDTO> getAll() {
-        return invoiceRepository.findAll().stream()
-                .map(i -> invoiceMapper.toDTO(i))
+    public List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter) {
+        InvoiceSpecification invoiceSpecification = new InvoiceSpecification(invoiceFilter);
+
+        return invoiceRepository.findAll(invoiceSpecification, PageRequest.of(0, invoiceFilter.getLimit()))
+                .stream()
+                .map(invoiceMapper::toDTO)
                 .collect(Collectors.toList());
     }
 

@@ -3,6 +3,7 @@ package cz.itnetwork.service;
 import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.InvoiceStatisticsDTO;
 import cz.itnetwork.entity.InvoiceEntity;
+import cz.itnetwork.entity.filtration.InvoiceFilter;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface InvoiceService {
      *
      * @return
      */
-    List<InvoiceDTO> getAll();
+    List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter);
 
     /**
      *

@@ -117,6 +117,7 @@ const PersonForm = () => {
                     handleChange={(e) => {
                         setPerson({...person, identificationNumber: e.target.value});
                     }}
+                    disabled={true}
                 />
 
                 <InputField

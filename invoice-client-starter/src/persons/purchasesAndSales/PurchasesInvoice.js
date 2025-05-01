@@ -11,7 +11,7 @@ const PurchasesInvoice = () => {
     useEffect(() => {
         if (!identificationNumber) return;
 
-        apiGet(`/api/identification/${identificationNumber}/sales`)
+        apiGet(`/api/identification/${identificationNumber}/purchases`)
             .then(data => {
                 console.log("API data:", data);
                 setInvoices(data || []);
@@ -50,7 +50,7 @@ const PurchasesInvoice = () => {
                         {invoices.map(invoice => (
                             <tr key={invoice._id}>
                                 <td>{invoice.invoiceNumber}</td>
-                                <td>{invoice.seller.name}</td>
+                                <td>{invoice.buyer.name}</td>
                                 <td>{invoice.product}</td>
                                 <td>{formatDate(invoice.issued)}</td>  {/* Formátování data vystavení */}
                                 <td>{formatDate(invoice.dueDate)}</td>  {/* Formátování data splatnosti */}

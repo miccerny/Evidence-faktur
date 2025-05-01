@@ -11,7 +11,7 @@ const SalesInvoice = () => {
     useEffect(() => {
         if (!identificationNumber) return;
         
-        apiGet(`/api/identification/${identificationNumber}/purchases`)
+        apiGet(`/api/identification/${identificationNumber}/sales`)
             .then(data => {
                 console.log("API error:", data);
                 console.log("Identification number from URL:", identificationNumber);
