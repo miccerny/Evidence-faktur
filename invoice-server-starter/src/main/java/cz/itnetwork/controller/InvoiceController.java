@@ -5,6 +5,7 @@ import cz.itnetwork.dto.InvoiceStatisticsDTO;
 import cz.itnetwork.entity.filtration.InvoiceFilter;
 import cz.itnetwork.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,8 +35,8 @@ public class InvoiceController {
      * @return
      */
     @GetMapping({"", "/"})
-    public List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter){
-        return invoiceService.getAll(invoiceFilter);
+    public List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable){
+        return invoiceService.getAll(invoiceFilter, pageable);
     }
 
     /**

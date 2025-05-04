@@ -4,6 +4,7 @@ import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.InvoiceStatisticsDTO;
 import cz.itnetwork.entity.InvoiceEntity;
 import cz.itnetwork.entity.filtration.InvoiceFilter;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface InvoiceService {
      *
      * @return
      */
-    List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter);
+    List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable);
 
     /**
      *

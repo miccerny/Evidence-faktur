@@ -14,6 +14,7 @@ import cz.itnetwork.entity.repository.specification.InvoiceSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -51,7 +52,7 @@ public class InvoiceServiceImpl implements  InvoiceService {
      * @return
      */
     @Override
-    public List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter) {
+    public List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable) {
         InvoiceSpecification invoiceSpecification = new InvoiceSpecification(invoiceFilter);
 
         return invoiceRepository.findAll(invoiceSpecification, PageRequest.of(0, invoiceFilter.getLimit()))

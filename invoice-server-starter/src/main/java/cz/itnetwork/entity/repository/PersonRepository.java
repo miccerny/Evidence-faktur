@@ -27,13 +27,14 @@ import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @EnableJpaRepositories
-public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
+public interface PersonRepository extends JpaRepository<PersonEntity, Long>, PagingAndSortingRepository<PersonEntity, Long> {
 
     List<PersonEntity> findByHidden(boolean hidden);
 

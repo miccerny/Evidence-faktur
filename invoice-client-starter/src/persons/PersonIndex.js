@@ -21,7 +21,7 @@
  */
 
 import React, {useEffect, useState} from "react";
-
+import "bootstrap/dist/css/bootstrap.min.css";
 import {apiDelete, apiGet} from "../utils/api";
 
 import PersonTable from "./PersonTable";
