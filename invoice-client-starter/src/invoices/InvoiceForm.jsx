@@ -31,15 +31,13 @@ const InvoiceForm = () => {
     useEffect(() => {
         if (id) {
             apiGet("/api/invoices/" + id).then((data) => {
-                setInvoice(data)
+                setInvoice(data.content)
             });
 
         }
-
-
         apiGet("/api/persons").then((data) => {
-            setBuyerList(data),
-            setSellerList(data)
+            setBuyerList(data.content),
+            setSellerList(data.content)
         });
 
     }, [id]);
@@ -98,7 +96,7 @@ const InvoiceForm = () => {
                     name="seller"
                     label="Dodavatel"
                     handleChange={(e) => {
-                        setInvoice({ ...invoice, seller: e.target.value });
+                        setInvoice({ ...invoice, seller: { _id: e.target.value} });
                     }}
                     value={invoice.seller.name}
                     items={sellerListSatte}
@@ -110,7 +108,7 @@ const InvoiceForm = () => {
                     name="buyer"
                     label="Nakupující"
                     handleChange={(e) => {
-                        setInvoice({ ...invoice, buyer: e.target.value });
+                        setInvoice({ ...invoice, buyer: { _id:  e.target.value }});
                     }}
                     value={invoice.buyer.name}
                     items={buyerListState}

@@ -2,6 +2,8 @@ package cz.itnetwork.service;
 
 import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.PersonStatisticDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ public interface PersonService {
      *
      * @return List of all non-hidden persons
      */
-    List<PersonDTO> getAll();
+    Page<PersonDTO> getAll(Pageable pageable);
 
     /**
      *

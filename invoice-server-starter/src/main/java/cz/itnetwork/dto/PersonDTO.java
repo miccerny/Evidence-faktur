@@ -40,9 +40,11 @@ public class PersonDTO {
     @Size(min = 3, message = "Jméno musí mít alespoň 3 znaky")
     private String name;
 
+    @Pattern(regexp = "^\\d{8}$", message = "Číslo musí být platné 8-místné")
     @NotEmpty(message = "IČ nesmí být prázdné")
     private String identificationNumber;
 
+    @Pattern(regexp = "^\\d{10}$", message = "Číslo DIČ musí být platné 10ti-místné")
     @NotEmpty(message = "Nesmí být prázdné")
     private String taxNumber;
 
@@ -61,10 +63,11 @@ public class PersonDTO {
     @NotEmpty(message = "Telefonní číslo musí být vyplněné")
     private String telephone;
 
-    @Email
+    @Email(message = "Vyplňte platný email")
     @NotEmpty(message = "Email nesmí být prázdný")
     private String mail;
 
+    @Pattern(regexp = "^[A-Za-zá-žÁ-Ž0-9\\s-]+(,\\s?[0-9]+)?$", message = "Zadejte platnou adresu")
     @NotEmpty(message = "Ulice musí být vyplněná")
     private String street;
 
@@ -72,6 +75,7 @@ public class PersonDTO {
     @Pattern(regexp = "^\\d{4,10}(-\\d{4})?$", message = "Neplatné PSČ.")
     private String zip;
 
+    @Pattern(regexp = "^[A-Za-zá-žÁ-Ž\\s-]+$", message = "Vyplňte platné město")
     @NotEmpty(message = "Prosím vyplňte název města")
     private String city;
 

@@ -8,13 +8,14 @@ export function InputSelect(props) {
   const emptySelected = multiple ? props.value?.length === 0 : !props.value;
   // příznak objektové struktury položek
   const objectItems = props.enum ? false : true;
-
+  console.log("InputSelect.items:", props.items);
+  console.log("Array.isArray(items)?", Array.isArray(props.items));
   return (
     <div className="form-group">
       <label>{props.label}:</label>
       <select
         required={required}
-        className="browser-default form-select"
+        className="browser-default form-select rounded-pill"
         multiple={multiple}
         name={props.name}
         onChange={props.handleChange}

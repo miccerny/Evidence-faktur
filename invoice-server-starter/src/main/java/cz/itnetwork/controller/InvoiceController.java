@@ -5,13 +5,13 @@ import cz.itnetwork.dto.InvoiceStatisticsDTO;
 import cz.itnetwork.entity.filtration.InvoiceFilter;
 import cz.itnetwork.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/invoices")
@@ -35,7 +35,7 @@ public class InvoiceController {
      * @return
      */
     @GetMapping({"", "/"})
-    public List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable){
+    public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, @PageableDefault(size = 5) Pageable pageable){
         return invoiceService.getAll(invoiceFilter, pageable);
     }
 

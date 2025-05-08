@@ -38,11 +38,14 @@ import PurchasesInvoice from "./persons/purchasesAndSales/PurchasesInvoice";
 import SalesInvoice from "./persons/purchasesAndSales/SalesInvoice";
 import InvoiceDetail from "./invoices/InvoiceDetail";
 import InvoiceForm from "./invoices/InvoiceForm";
+import PersonStatistics from "./statistics/PersonStatistics";
+import InvoiceStatistics from "./statistics/InvoiceStatistics";
 
 export function App() {
   return (
     <Router>
       <div className="container">
+        <div className="dropdown">
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
@@ -55,8 +58,12 @@ export function App() {
                 Faktury
               </Link>
             </li>
+            <li className="nav-item">
+            
+            </li>
           </ul>
         </nav>
+        </div>
 
         <Routes>
           <Route index element={<Navigate to={"/persons"} />} />
@@ -78,7 +85,16 @@ export function App() {
             <Route path="create" element={<InvoiceForm />} />
             <Route path="edit/:id" element={<InvoiceForm />}/>
           </Route>
-          
+
+        <Route index element={<Navigate to={"/persons/statistics"}/>}/>
+          <Route path="/persons/statistics">
+            <Route index element={<PersonStatistics />}/>
+        </Route>
+        <Route index element={<Navigate to={"/invoices/statistics"}/>}/>
+          <Route path="/invoices/statistics">
+            <Route index element={<InvoiceStatistics />}/>
+        </Route>
+
         </Routes>
       </div>
     </Router>

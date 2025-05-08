@@ -25,6 +25,9 @@ import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.PersonStatisticDTO;
 import cz.itnetwork.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,8 +54,8 @@ public class PersonController {
      * @return
      */
     @GetMapping("")
-    public List<PersonDTO> getPersons() {
-        return personService.getAll();
+    public Page<PersonDTO> getPersons(@PageableDefault(size = 1000) Pageable pageable) {
+        return personService.getAll(pageable);
     }
 
     /**

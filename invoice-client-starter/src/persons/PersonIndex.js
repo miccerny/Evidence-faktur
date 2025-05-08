@@ -20,36 +20,65 @@
  * Více informací na http://www.itnetwork.cz/licence
  */
 
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {apiDelete, apiGet} from "../utils/api";
+import { apiDelete, apiGet } from "../utils/api";
+import { Link, Route } from "react-router-dom";
+import PersonStatistics from "../statistics/PersonStatistics";
 
 import PersonTable from "./PersonTable";
 
+const ITEMS_PER_PAGE = 5;
+
 const PersonIndex = () => {
     const [persons, setPersons] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalElements, setTotalElements] = useState(0);
 
     const deletePerson = async (id) => {
         try {
-            await apiDelete("/api/persons/" + id);
+            await apiDelete(`/api/persons/${id}`);
+            const data = await apiGet("/api/persons", { page, size: ITEMS_PER_PAGE });
+            setPersons(data.content);
+            setTotalPages(data.totalPages);
+            setTotalElements(data.totalElements);
         } catch (error) {
             console.log(error.message);
             alert(error.message)
         }
-        setPersons(persons.filter((item) => item._id !== id));
     };
 
     useEffect(() => {
-        apiGet("/api/persons").then((data) => setPersons(data));
-    }, []);
+        apiGet("/api/persons", { page, size: ITEMS_PER_PAGE })
+            .then((data) => {
+                console.log("Data z API:", data);
+                setPersons(data.content);
+                setTotalPages(data.totalPages);
+                setTotalElements(data.totalElements);
+            })
+            .catch((err) => {
+                console.error("Chyba při načítání osob:", err);
+            });
+    }, [page]);
 
     return (
-        <div>
+        <div className="container">
+            <div className="d-flex justify-content-center">
+                <div className="btn btn-info mt-3">
+                    <Link to={"/persons/statistics"} className="nav-link">
+                        Statistika osob
+                    </Link>
+                </div>
+            </div>
             <h1>Seznam osob</h1>
             <PersonTable
+                totalPages={totalPages}
+                setPage={setPage}
+                page={page}
                 deletePerson={deletePerson}
+                totalElements={totalElements}
                 items={persons}
-                label="Počet osob:"
             />
         </div>
     );

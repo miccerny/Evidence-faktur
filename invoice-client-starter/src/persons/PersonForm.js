@@ -28,6 +28,8 @@ import {apiGet, apiPost, apiPut} from "../utils/api";
 import InputField from "../components/InputField";
 import InputCheck from "../components/InputCheck";
 import FlashMessage from "../components/FlashMessage";
+console.log("Načítám komponentu");
+import '../components/style.css';
 
 import Country from "./Country";
 
@@ -55,7 +57,8 @@ const PersonForm = () => {
 
     useEffect(() => {
         if (id) {
-            apiGet("/api/persons/" + id).then((data) => setPerson(data));
+            apiGet("/api/persons/" + id)
+            .then((data) => setPerson(data));
         }
     }, [id]);
 
@@ -118,7 +121,7 @@ const PersonForm = () => {
                         setPerson({...person, identificationNumber: e.target.value});
                     }}
 
-                    disabled={person.identificationNumber !== ""}
+                    disabled={id && person.identificationNumber !== ""}
                 />
 
                 <InputField

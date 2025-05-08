@@ -83,11 +83,11 @@ const InvoiceFilter = (props) => {
                     />
                 </div>
             </div>
-            <div className="row">
-                <div className="col">
+            <div className="row mt-2 rounded-1">
+                <div className="col d-flex justify-content-center">
                     <input
                         type="submit"
-                        className="btn btn-secondary float-right mt-2"
+                        className="btn btn-info float-right mt-2"
                         value={props.confirm}
                     />
                 </div>

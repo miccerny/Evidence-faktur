@@ -29,6 +29,8 @@ import cz.itnetwork.entity.repository.PersonRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -75,11 +77,9 @@ public class PersonServiceImpl implements PersonService {
      * @return
      */
     @Override
-    public List<PersonDTO> getAll() {
-        return personRepository.findByHidden(false)
-                .stream()
-                .map(i -> personMapper.toDTO(i))
-                .collect(Collectors.toList());
+    public Page<PersonDTO> getAll(Pageable pageable) {
+        return personRepository.findByHidden(false, pageable)
+                .map(personMapper::toDTO);
     }
 
     /**

@@ -24,6 +24,8 @@ package cz.itnetwork.entity.repository;
 import cz.itnetwork.dto.PersonStatisticDTO;
 import cz.itnetwork.entity.PersonEntity;
 import jakarta.persistence.Tuple;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -36,7 +38,7 @@ import java.util.Optional;
 @EnableJpaRepositories
 public interface PersonRepository extends JpaRepository<PersonEntity, Long>, PagingAndSortingRepository<PersonEntity, Long> {
 
-    List<PersonEntity> findByHidden(boolean hidden);
+    Page<PersonEntity> findByHidden(boolean hidden, Pageable pageable);
 
     Optional<PersonEntity> findByIdentificationNumber(String identificationNumber);
 
@@ -45,10 +47,11 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long>, Pag
      * @return
      */
     @Query(value = """
-    SELECT p.id AS personId, p.name AS personName, IFNULL(SUM(i.price), 0) AS revenue
+    SELECT p.id AS personId, p.name AS personName, COALESCE(SUM(i.price), 0) AS revenue
     FROM person p
     LEFT JOIN invoice i ON p.id = i.seller_id
     GROUP BY p.id, p.name
+    ORDER BY revenue DESC, p.id ASC
     """, nativeQuery = true)
     List<Tuple> getPersonSumPrice();
 }

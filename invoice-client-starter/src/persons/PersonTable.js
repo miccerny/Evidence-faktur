@@ -25,27 +25,37 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
-const PersonTable = ({ label, items, deletePerson }) => {
+const ITEMS_PER_PAGE = 5;
 
+
+const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalElements }) => {
+
+    console.log("Aktuální stránka (page):", page, typeof page);
+
+    if (!Array.isArray(items)) {
+        return <div>Načítání dat…</div>;
+    }
 
     return (
         <div className="container">
             <p>
-                {label} {items.length}
+               Počet: {totalElements}
             </p>
 
             <div className="row g-3">
-                {items.map((item, index) => (
-                    <div className="col-md-6 col-lg-12" key={index + 1}>
+                {items.map((person, index) => (
+                    <div className="col-md-6 col-lg-12" key={person._id + 1}>
                         <div className="card shadow-sm h-100">
                             <div className="card-body position-relative">
-                                <div className="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 className="card-title mb-0">{index + 1} - {item.name}</h5>
+                                <div className="d-flex justify-content-between align-items-center m-1">
+                                    <h5 className="card-title">
+                                        {(page * ITEMS_PER_PAGE) + index + 1} - {person.name}
+                                        </h5>
                                     <div className="dropdown">
                                         <button
                                             className="btn btn-primary btn-sm dropdown-toggle"
                                             type="button"
-                                            id={`dropdownMenuButton-${item._id}`}
+                                            id={`dropdownMenuButton-${person._id}`}
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false"
                                         >
@@ -53,11 +63,11 @@ const PersonTable = ({ label, items, deletePerson }) => {
                                         </button>
                                         <ul
                                             className="dropdown-menu"
-                                            aria-labelledby={`dropdownMenuButton-${item._id}`}
+                                            aria-labelledby={`dropdownMenuButton-${person._id}`}
                                         >
                                             <li>
                                                 <Link
-                                                    to={"/persons/show/" + item._id}
+                                                    to={"/persons/show/" + person._id}
                                                     className="dropdown-item btn btn-secondary"
                                                 >
                                                     Zobrazit
@@ -65,7 +75,7 @@ const PersonTable = ({ label, items, deletePerson }) => {
                                             </li>
                                             <li>
                                                 <Link
-                                                    to={"/persons/edit/" + item._id}
+                                                    to={"/persons/edit/" + person._id}
                                                     className="dropdown-item"
                                                 >
                                                     Upravit
@@ -73,10 +83,10 @@ const PersonTable = ({ label, items, deletePerson }) => {
                                             </li>
                                             <li>
                                                 <button
-                                                    onClick={() => {
+                                                    onClick={() => 
 
-                                                        deletePerson(item._id)
-                                                    }}
+                                                        deletePerson(person._id)
+                                                    }
                                                     className="dropdown-item text-danger"
                                                 >
                                                     Odstranit
@@ -93,12 +103,33 @@ const PersonTable = ({ label, items, deletePerson }) => {
                 ))}
             </div>
 
+            <div className="d-flex justify-content-center align-items-center mt-4">
+                <div>
+                    <button
+                        className="btn btn-outline-secondary me-2"
+                        disabled={page === 0}
+                        onClick={() => setPage(page - 1)}
+                    >
+                        Předchozí
+                    </button>
+                    <button
+                        className="btn btn-outline-secondary"
+                        disabled={page + 1 >= totalPages}
+                        onClick={() => setPage(page + 1)}
+                    >
+                        Další
+                    </button>
+                    <span className="ms-3">Stránka {page + 1} z {totalPages}</span>
+                </div>
+            </div>
 
+            <div className="mt-3">
                 <Link to={"/persons/create"} className="btn btn-success">
                     Nová osoba
                 </Link>
-            </div >
-    );
+            </div>
+            </div>
+            );
 };
 
-export default PersonTable;
+            export default PersonTable;

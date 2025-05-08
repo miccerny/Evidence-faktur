@@ -13,6 +13,7 @@ import cz.itnetwork.entity.repository.PersonRepository;
 import cz.itnetwork.entity.repository.specification.InvoiceSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -52,13 +53,12 @@ public class InvoiceServiceImpl implements  InvoiceService {
      * @return
      */
     @Override
-    public List<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable) {
+    public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable) {
         InvoiceSpecification invoiceSpecification = new InvoiceSpecification(invoiceFilter);
 
-        return invoiceRepository.findAll(invoiceSpecification, PageRequest.of(0, invoiceFilter.getLimit()))
-                .stream()
-                .map(invoiceMapper::toDTO)
-                .collect(Collectors.toList());
+        Page<InvoiceEntity> entityPage = invoiceRepository.findAll(invoiceSpecification, pageable);
+
+        return entityPage.map(invoiceMapper::toDTO);
     }
 
     /**

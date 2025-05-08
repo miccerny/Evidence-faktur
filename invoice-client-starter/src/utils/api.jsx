@@ -21,7 +21,12 @@
  */
 
 
+
+import axios from "axios";
+
+
 const API_URL = "http://localhost:8080";
+axios.defaults.baseURL = API_URL;
 
 const fetchData = (url, requestOptions) => {
     const apiUrl = `${API_URL}${url}`;
@@ -40,7 +45,7 @@ const fetchData = (url, requestOptions) => {
         });
 };
 
-export const apiGet = (url, params) => {
+export const apiGet = async (url, params) => {
     const filteredParams = Object.fromEntries(
         Object.entries(params || {}).filter(([_, value]) => value != null)
     );
@@ -50,6 +55,8 @@ export const apiGet = (url, params) => {
         method: "GET",
     };
 
+    const response = await fetchData(apiUrl, requestOptions);
+    console.log("Odpověď z API:", response);
     return fetchData(apiUrl, requestOptions);
 };
 

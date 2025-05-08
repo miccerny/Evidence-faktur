@@ -3,6 +3,9 @@ package cz.itnetwork.entity.repository;
 import cz.itnetwork.dto.PersonStatisticDTO;
 import cz.itnetwork.entity.InvoiceEntity;
 import cz.itnetwork.entity.PersonEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -18,7 +21,7 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long>, J
      *
      * @return
      */
-    List<InvoiceEntity> findAll();
+    Page<InvoiceEntity> findAll(Specification<InvoiceEntity> specification, Pageable pageable);
 
     /**
      *
@@ -38,7 +41,7 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long>, J
      *
      * @return
      */
-    @Query(value = "SELECT SUM(price) FROM invoice WHERE YEAR(issued) = YEAR(CURDATE())", nativeQuery = true)
+    @Query(value = "SELECT SUM(price) FROM invoice WHERE EXTRACT(YEAR FROM issued) = EXTRACT(YEAR FROM CURRENT_DATE)", nativeQuery = true)
     BigDecimal sumPricesForCurrentYear();
 
     /**
