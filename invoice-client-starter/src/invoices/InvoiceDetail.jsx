@@ -5,10 +5,19 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { apiGet } from "../utils/api";
 import InvoiceTable from "./InvoiceTable";
 import dateStringFormatter from "../utils/dateStringFormatter";
+import SellerDetails from "../components/SellerDetails";
 
 const InvoiceDetail = () => {
     const {id} = useParams();
     const [invoice, setInvoice] = useState();
+    const [isOpen, setIsOpen] = useState(false);
+    const [seller, setSeller] = useState();
+    const [showDetails, setShowDetails] = useState(false);
+
+
+    const toggleDetails = () => {
+        setShowDetails(previousState => !previousState);
+    }
 
     useEffect(() => {
         apiGet("/api/invoices/" + id)
@@ -18,6 +27,14 @@ const InvoiceDetail = () => {
         .catch(error => {
             console.error(error);
         });
+
+        apiGet("/api/persons/" + id)
+        .then(data => {
+            setSeller(data)
+        })
+        .catch(error => {
+            console.error(error);
+        })
     }, [id]);
 
     if(!invoice){
@@ -28,56 +45,30 @@ const InvoiceDetail = () => {
         <div>
             <h1>Detail faktury</h1>
             <hr />
-
+            <div className="container">
+                <div className="card">
+                <div className="card-title">
             <h3>Produkt: {invoice.product}</h3>
-
-            <p><strong>Číslo faktury:</strong>
+                </div>
+            <strong>Číslo faktury:</strong>
                 <br/>
-                {invoice.invoiceNumber}
-            </p>
+            <span>{invoice.invoiceNumber} </span><br/>
+            
 
-            <p><strong>Dodavatel:</strong>
+            <p><strong>Dodavatel:</strong></p>
                 <br/>
-                {invoice.seller.name}
-                {/*
-                 <p>
-                    <strong>DIČ:</strong>
-                    <br />
-                    {person.seller.taxNumber}
-                </p>
-                <p>
-                    <strong>Bankovní účet:</strong>
-                    <br />
-                    {person.seller.accountNumber}/{person.seller.bankCode} 
-                </p>
-                <p>
-                    <strong>IBAN:</strong><br/>
-                    ({person.seller.iban})
-                </p>
-                <p>
-                    <strong>Tel.:</strong>
-                    <br />
-                    {person.seller.telephone}
-                </p>
-                <p>
-                    <strong>Mail:</strong>
-                    <br />
-                    {person.seller.mail}
-                </p>
-                <p>
-                    <strong>Sídlo:</strong>
-                    <br />
-                    {person.seller.street}, {person.seller.city} <br/>
-                    {person.seller.zip}, {country}
-                </p>
-                <p>
-                    <strong>Poznámka:</strong>
-                    <br />
-                    {person.seller.note}
-                </p>
+                <div className="seller-box">
+                <button className="toggle-btn" onClick={toggleDetails}>
+                    {invoice.seller.name}
+                    </button>
+                    </div>
+                    
+                    <div className={`seller-details-wrapper ${showDetails ? 'open' : ''}`}>
+                <SellerDetails seller={invoice.seller} />
+                </div>
                 
-                 */}
-            </p>
+            
+            
 
             <p><strong>Nakupující:</strong>
                 <br/>
@@ -144,7 +135,8 @@ const InvoiceDetail = () => {
                 {invoice.note}
             </p> 
 
-
+            </div>
+            </div>
 
         </div>
         </>

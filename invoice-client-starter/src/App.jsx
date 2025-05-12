@@ -20,7 +20,6 @@
  * Více informací na http://www.itnetwork.cz/licence
  */
 
-import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   BrowserRouter as Router,
@@ -40,13 +39,14 @@ import InvoiceDetail from "./invoices/InvoiceDetail";
 import InvoiceForm from "./invoices/InvoiceForm";
 import PersonStatistics from "./statistics/PersonStatistics";
 import InvoiceStatistics from "./statistics/InvoiceStatistics";
+import './style.css';
 
 export function App() {
   return (
     <Router>
       <div className="container">
-        <div className="dropdown">
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <div className="dropdown d-flex justify-content-end col-12">
+        <nav className="navbar navbar-expand-lg navbar-light ">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
               <Link to={"/persons"} className="nav-link">

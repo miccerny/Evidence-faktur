@@ -29,7 +29,6 @@ import InputField from "../components/InputField";
 import InputCheck from "../components/InputCheck";
 import FlashMessage from "../components/FlashMessage";
 console.log("Načítám komponentu");
-import '../components/style.css';
 
 import Country from "./Country";
 
@@ -243,7 +242,7 @@ const PersonForm = () => {
 
                 <InputField
                     required={true}
-                    type="text"
+                    type="textarea"
                     name="note"
                     label="Poznámka"
                     value={person.note}

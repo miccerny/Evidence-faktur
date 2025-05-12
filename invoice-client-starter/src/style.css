@@ -1,0 +1,12 @@
+#text{
+ margin-bottom: auto;
+}
+.seller-details-wrapper {
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  max-height: 0;
+}
+
+.seller-details-wrapper.open {
+  max-height: 500px; /* nebo větší podle potřeby */
+}

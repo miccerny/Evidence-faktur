@@ -20,15 +20,17 @@
  * Více informací na http://www.itnetwork.cz/licence
  */
 
-import React, { useEffect, useState } from "react";
+
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import '../styles/CardStyles.css'
+import '../styles/ButtonStyles.css'
 
 const ITEMS_PER_PAGE = 5;
 
 
-const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalElements }) => {
+const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalElements, openCardId, toggleCard }) => {
 
     console.log("Aktuální stránka (page):", page, typeof page);
 
@@ -45,43 +47,38 @@ const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalEleme
             <div className="row g-3">
                 {items.map((person, index) => (
                     <div className="col-md-6 col-lg-12" key={person._id + 1}>
-                        <div className="card shadow-sm h-100">
+                        <div className="custom-card shadow-sm h-100">
                             <div className="card-body position-relative">
-                                <div className="d-flex justify-content-between align-items-center m-1">
-                                    <h5 className="card-title">
+                                <div className="d-flex justify-content-between align-items-center m-1"
+                                    onClick={() => toggleCard(person._id)}
+                                >
+                                    <h5 className="custom-card-title">
                                         {(page * ITEMS_PER_PAGE) + index + 1} - {person.name}
                                         </h5>
-                                    <div className="dropdown">
-                                        <button
-                                            className="btn btn-primary btn-sm dropdown-toggle"
-                                            type="button"
-                                            id={`dropdownMenuButton-${person._id}`}
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                        >
-                                            Akce
+                                        <button className="btn btn-sm btn-outline-primary">
+                                            {openCardId === person._id ? "X" : "Akce"}
                                         </button>
-                                        <ul
-                                            className="dropdown-menu"
-                                            aria-labelledby={`dropdownMenuButton-${person._id}`}
-                                        >
-                                            <li>
+                                        </div>
+                                    <div className={`action-panel mt-3 ${openCardId === person._id ? "open" : ""}`}>
+                                        <div className="d-grid gap-2">
+                                            <button className="btn btn-info">
                                                 <Link
                                                     to={"/persons/show/" + person._id}
                                                     className="dropdown-item btn btn-secondary"
                                                 >
                                                     Zobrazit
                                                 </Link>
-                                            </li>
-                                            <li>
+                                                </button>
+                                            
+                                            <button className="btn btn-ms">
                                                 <Link
                                                     to={"/persons/edit/" + person._id}
                                                     className="dropdown-item"
                                                 >
                                                     Upravit
                                                 </Link>
-                                            </li>
-                                            <li>
+                                            </button>
+                                           <button>
                                                 <button
                                                     onClick={() => 
 
@@ -91,11 +88,13 @@ const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalEleme
                                                 >
                                                     Odstranit
                                                 </button>
-                                            </li>
-                                        </ul>
+                                                </button>
+                                            
+                            
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            
                         </div>
                     </div>
 

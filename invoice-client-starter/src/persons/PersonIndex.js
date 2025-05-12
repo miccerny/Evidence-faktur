@@ -24,7 +24,6 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { apiDelete, apiGet } from "../utils/api";
 import { Link, Route } from "react-router-dom";
-import PersonStatistics from "../statistics/PersonStatistics";
 
 import PersonTable from "./PersonTable";
 
@@ -35,7 +34,11 @@ const PersonIndex = () => {
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [totalElements, setTotalElements] = useState(0);
+    const [openCardId, setOpenCardId] = useState(null);
 
+    const toggleCard =  (id) =>{
+        setOpenCardId(previousId => (previousId === id ? null : id));
+    }
     const deletePerson = async (id) => {
         try {
             await apiDelete(`/api/persons/${id}`);
@@ -64,7 +67,7 @@ const PersonIndex = () => {
 
     return (
         <div className="container">
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-end">
                 <div className="btn btn-info mt-3">
                     <Link to={"/persons/statistics"} className="nav-link">
                         Statistika osob
@@ -79,6 +82,8 @@ const PersonIndex = () => {
                 deletePerson={deletePerson}
                 totalElements={totalElements}
                 items={persons}
+                openCardId={openCardId}
+                toggleCard={toggleCard}
             />
         </div>
     );
