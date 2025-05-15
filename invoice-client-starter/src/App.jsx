@@ -27,6 +27,7 @@ import {
   Route,
   Routes,
   Navigate,
+  useLocation
 } from "react-router-dom";
 
 import PersonIndex from "./persons/PersonIndex";
@@ -41,13 +42,22 @@ import PersonStatistics from "./statistics/PersonStatistics";
 import InvoiceStatistics from "./statistics/InvoiceStatistics";
 import './style.css';
 
-export function App() {
+
+
+function AppContent() {
+
+  
+  const location = useLocation();
+  const showInvoiceStatistics = location.pathname === "/invoices";
+  const showPersonStatistics = location.pathname === "/persons";
+
   return (
-    <Router>
-      <div className="container">
-        <div className="dropdown d-flex justify-content-end col-12">
-        <nav className="navbar navbar-expand-lg navbar-light ">
-          <ul className="navbar-nav mr-auto">
+    
+      <>
+      <nav className="mb-5 navbar navbar-expand-lg navbar-light bg-info w-100">
+          <div className="container">
+          <ul className="navbar-nav ms-auto">
+          
             <li className="nav-item">
               <Link to={"/persons"} className="nav-link">
                 Osoby
@@ -58,13 +68,29 @@ export function App() {
                 Faktury
               </Link>
             </li>
+            {showInvoiceStatistics && (
             <li className="nav-item">
-            
+              
+              <Link to={"/invoices/statistics"} className="nav-link">
+              Statistika faktur
+              </Link>
             </li>
-          </ul>
-        </nav>
-        </div>
+            )}
+            {showPersonStatistics && (
+            <li className="nav-item">
+              
+              <Link to={"/persons/statistics"} className="nav-link">
+              Statistika osob
+              </Link>
+            </li>
+            )}
 
+          </ul>
+
+        </div>
+  </nav>
+        
+      <div className="container">
         <Routes>
           <Route index element={<Navigate to={"/persons"} />} />
           <Route path="/persons">
@@ -96,9 +122,17 @@ export function App() {
         </Route>
 
         </Routes>
-      </div>
+        </div>
+    </>
+  );
+}
+
+export default function App(){
+  
+  return(
+    <Router>
+      <AppContent />
     </Router>
   );
 }
 
-export default App;

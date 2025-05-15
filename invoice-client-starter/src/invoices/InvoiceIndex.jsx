@@ -22,6 +22,11 @@ const InvoiceIndex = () => {
         maxPrice: undefined,
         limit: undefined,
     });
+    const [openCardId, setOpenCardId] = useState(null);
+
+    const toggleCard = (id) => {
+        setOpenCardId(previousId => (previousId === id ? null :id));
+    }
 
     const deleteInvoice = async (id) => {
         try{
@@ -71,13 +76,7 @@ const InvoiceIndex = () => {
     }
     return(
         <div className="container">
-            <div className="d-flex justify-content-center">
-                <div className="btn btn-info mt-3">
-                <Link to={"/invoices/statistics"} className="nav-link">
-                Statistika faktur
-                </Link>
-            </div>
-            </div>
+        
             <h1>Seznam faktur</h1>
             <hr />
             <InvoiceFilter
@@ -97,6 +96,8 @@ const InvoiceIndex = () => {
             totalPages={totalPages}
             setPage={setPage}
             page={page}
+            openCardId={openCardId}
+            toggleCard={toggleCard}
             label="Počet faktur:"
             />
         </div>

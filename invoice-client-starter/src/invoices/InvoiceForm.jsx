@@ -12,7 +12,7 @@ const InvoiceForm = () => {
     const [buyerListState, setBuyerList] = useState([]);
     const [sellerListSatte, setSellerList] = useState([]);
     const [invoice, setInvoice] = useState({
-        identificationNumber: "",
+        invoiceNumber: "",
         seller: "",
         buyer: "",
         issued: "",
@@ -30,8 +30,9 @@ const InvoiceForm = () => {
 
     useEffect(() => {
         if (id) {
-            apiGet("/api/invoices/" + id).then((data) => {
-                setInvoice(data.content)
+            apiGet("/api/invoices/" + id)
+            .then((data) => {
+                setInvoice(data)
             });
 
         }
@@ -72,20 +73,20 @@ const InvoiceForm = () => {
             {sent && (
                 <FlashMessage
                     theme={success ? "success" : ""}
-                    text={success ? "Uložení osobnosti proběhlo úspěšně" : ""}
+                    text={success ? "Uložení faktury proběhlo úspěšně" : ""}
                 />
             )}
             <form onSubmit={handleSubmit}>
                 <InputField
                     required={true}
-                    type="text"
+                    type="number"
                     name="invoiceNumber"
                     min="3"
                     label="Číslo faktury"
                     prompt="Zadej číslo"
                     value={invoice.invoiceNumber}
                     handleChange={(e) => {
-                        setInvoice({ ...invoice, invoiceNumber: e.target.value });
+                        setInvoice({...invoice, invoiceNumber: e.target.value });
                     }}
                 />
 
@@ -136,7 +137,7 @@ const InvoiceForm = () => {
                     prompt="Zadej datum"
                     value={invoice.dueDate}
                     handleChange={(e) => {
-                        set({ ...invoice, dueDate: e.target.value });
+                        setInvoice({ ...invoice, dueDate: e.target.value });
                     }}
                 />
 
@@ -180,7 +181,7 @@ const InvoiceForm = () => {
                 />
 
                 <InputField
-                    required={true}
+                    required={false}
                     type="textarea"
                     name="note"
                     min="3"

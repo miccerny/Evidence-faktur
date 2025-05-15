@@ -34,35 +34,7 @@ import java.sql.SQLException;
 public class ApplicationMain {
 
     public static void main(String[] args) {
-        onApplicationEvent();
+
         SpringApplication.run(ApplicationMain.class, args);
-    }
-
-    private static void onApplicationEvent() {
-        try (Connection conn = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/postgres", "postgres", "fortment")) {
-
-            ResultSet rs = conn.createStatement().executeQuery(
-                    "SELECT 1 FROM pg_database WHERE datname = 'invoicedatabase'");
-
-            if (!rs.next()) {
-                try {
-                    conn.createStatement().execute("CREATE DATABASE \"InvoiceDatabase\";");
-                    System.out.println("✅ Databáze 'InvoiceDatabase' byla vytvořena.");
-                } catch (SQLException e) {
-                    if (e.getMessage().contains("already exists")) {
-                        System.out.println("ℹ️ Databáze už existuje (při CREATE DATABASE). Ignoruji.");
-                    } else {
-                        throw e; // jiná chyba, např. připojení, práva atd.
-                    }
-                }
-            } else {
-                System.out.println("ℹ️ Databáze 'InvoiceDatabase' již existuje.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("⚠️ Chyba při kontrole/vytvoření databáze: " + e.getMessage());
-            // ale nevyhazuj ji ven, jen zaloguj – aplikace poběží dál
-        }
     }
 }

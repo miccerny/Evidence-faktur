@@ -114,7 +114,7 @@ const PersonForm = () => {
                     name="identificationNumber"
                     min="3"
                     label="IČO"
-                    prompt="Zadejte IČO"
+                    prompt="Zadejte IČO (8 místné číslo)"
                     value={person.identificationNumber}
                     handleChange={(e) => {
                         setPerson({...person, identificationNumber: e.target.value});
@@ -129,7 +129,7 @@ const PersonForm = () => {
                     name="taxNumber"
                     min="3"
                     label="DIČ"
-                    prompt="Zadejte DIČ"
+                    prompt="Zadejte DIČ (8-10 číslic)"
                     value={person.taxNumber}
                     handleChange={(e) => {
                         setPerson({...person, taxNumber: e.target.value});
@@ -241,7 +241,7 @@ const PersonForm = () => {
                 />
 
                 <InputField
-                    required={true}
+                    required={false}
                     type="textarea"
                     name="note"
                     label="Poznámka"

@@ -1,3 +1,7 @@
 .button-show{
     columns: 1;
 }
+
+.btn-outline-warning.text-black {
+  color: black;
+}

@@ -1,9 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import '../styles/CardStyles.css'
+import '../styles/ButtonStyles.css'
 
 const ITEMS_PER_PAGE = 5;
 
-const InvoiceTable = ({ label, items, deleteInvoice, page, setPage, totalPages, totalElements }) => {
+const InvoiceTable = ({ label, items, deleteInvoice, page, setPage, totalPages, totalElements, toggleCard, openCardId }) => {
 
     if (!Array.isArray(items)) {
         return <div>Načítám faktury…</div>;
@@ -14,53 +18,45 @@ const InvoiceTable = ({ label, items, deleteInvoice, page, setPage, totalPages, 
                 Počet faktur: {totalElements}
             </p>
             <h3>
-            Číslo faktury
+                Číslo faktury
             </h3>
-
             <div className="row g-3">
                 {items.map((invoice) => (
                     <div className="col-md-6 col-lg-12" key={invoice._id + 1}>
                         <div className="card shadow-sm h-100">
-                            <div className="d-flex justify-content-between align-items-center m-2">
-                                <h5 className="card-title">
-                                {invoice.invoiceNumber}
-                                </h5>
-                                <div className="dropdown">
+                            <div className="card-body position-relative">
+                                <div className="d-flex justify-content-between align-items-center m-2"
+                                    onClick={() => toggleCard(invoice._id)}>
+                                    <h5 className="custom-card-title">
+                                        {invoice.invoiceNumber}
+                                    </h5>
+
                                     <button
-                                        className="btn btn-primary btn-sm dropdown-toggle"
-                                        type="button"
-                                        id={`dropdownMenuButtton-${invoice._id}`}
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false"
+                                        className="btn btn-sm btn-outline-primary"
                                     >
-                                        Akce
+                                        {openCardId === invoice._id ? "X" : "Akce"}
                                     </button>
-                                    <ul className="dropdown-menu" aria-labelledby={`dropdownMenuButton-${invoice._id}`}>
-                                        <li>
-                                            <Link
-                                                to={"/invoices/show/" + invoice._id}
-                                                className="dropdown-item btn btn-info"
-                                            >
-                                                Zobrazit
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link
-                                                to={"/invoices/edit/" + invoice._id}
-                                                className="dropdown-item btn btn-sm btn-warning"
-                                            >
-                                                Upravit
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <button
-                                                onClick={() => deleteInvoice(invoice._id)}
-                                                className="dropdown-item btn btn-sm btn-danger"
-                                            >
-                                                Odstranit
-                                            </button>
-                                        </li>
-                                    </ul>
+                                </div>
+                                <div className={`action-panel mt-3 ${openCardId === invoice._id ? "open" : ""}`}>
+                                    <div className="d-grid gap-2">
+                                        <Link
+                                            to={"/invoices/show/" + invoice._id}
+                                            className="btn btn-info"
+                                        >
+                                            Zobrazit
+                                        </Link>
+                                        <Link
+                                            to={"/invoices/edit/" + invoice._id}
+                                            className="btn btn-outline-warning text-black">
+                                            Upravit
+                                        </Link>
+                                        <button
+                                            onClick={() => deleteInvoice(invoice._id)}
+                                            className="btn btn-sm btn-danger"
+                                        >
+                                            Odstranit
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -87,9 +83,9 @@ const InvoiceTable = ({ label, items, deleteInvoice, page, setPage, totalPages, 
                 </div>
             </div>
             <div className="mt-3">
-            <Link to={"/invoices/create"} className="btn btn-success">
-                Nová faktura
-            </Link>
+                <Link to={"/invoices/create"} className="btn btn-success">
+                    Nová faktura
+                </Link>
             </div>
         </div>
     )

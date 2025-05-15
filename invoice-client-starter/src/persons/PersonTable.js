@@ -41,7 +41,7 @@ const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalEleme
     return (
         <div className="container">
             <p>
-               Počet: {totalElements}
+               Počet osob: {totalElements}
             </p>
 
             <div className="row g-3">
@@ -61,24 +61,19 @@ const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalEleme
                                         </div>
                                     <div className={`action-panel mt-3 ${openCardId === person._id ? "open" : ""}`}>
                                         <div className="d-grid gap-2">
-                                            <button className="btn btn-info">
+                                        
                                                 <Link
                                                     to={"/persons/show/" + person._id}
-                                                    className="dropdown-item btn btn-secondary"
+                                                    className="btn btn-info"
                                                 >
                                                     Zobrazit
                                                 </Link>
-                                                </button>
-                                            
-                                            <button className="btn btn-ms">
                                                 <Link
                                                     to={"/persons/edit/" + person._id}
-                                                    className="dropdown-item"
+                                                    className="btn btn-ms"
                                                 >
                                                     Upravit
                                                 </Link>
-                                            </button>
-                                           <button>
                                                 <button
                                                     onClick={() => 
 
@@ -88,9 +83,6 @@ const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalEleme
                                                 >
                                                     Odstranit
                                                 </button>
-                                                </button>
-                                            
-                            
                                         </div>
                                     </div>
                                 </div>

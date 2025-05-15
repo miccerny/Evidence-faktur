@@ -67,13 +67,6 @@ const PersonIndex = () => {
 
     return (
         <div className="container">
-            <div className="d-flex justify-content-end">
-                <div className="btn btn-info mt-3">
-                    <Link to={"/persons/statistics"} className="nav-link">
-                        Statistika osob
-                    </Link>
-                </div>
-            </div>
             <h1>Seznam osob</h1>
             <PersonTable
                 totalPages={totalPages}
