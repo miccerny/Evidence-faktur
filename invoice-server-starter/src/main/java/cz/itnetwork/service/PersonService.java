@@ -7,49 +7,57 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+/**
+ * Rozhraní definující základní operace pro správu osob.
+ * *
+ * Zahrnuje metody pro přidání, aktualizaci, odstranění
+ * a načtení informací o osobách.
+ */
 public interface PersonService {
 
     /**
-     * Creates a new person
+     * Přidá novou osobu do systému.
      *
-     * @param personDTO Person to create
-     * @return newly created person
+     * @param personDTO -  data nové osoby
+     * @return -  DTO právě uložené osoby s přiřazeným ID
      */
     PersonDTO addPerson(PersonDTO personDTO);
 
     /**
-     * <p>Sets hidden flag to true for the person with the matching [id]</p>
-     * <p>In case a person with the passed [id] isn't found, the method <b>silently fails</b></p>
+     * Označí osobu se zadaným ID jako skrytou (soft delete).
      *
-     * @param id Person to delete
+     * @param id ID osoby, která má být skryta
      */
     void removePerson(long id);
 
     /**
-     * Fetches all non-hidden persons
+     * Vrátí stránkovaný seznam všech aktivních osob.
      *
-     * @return List of all non-hidden persons
+     * @param pageable informace o stránkování a řazení výsledků
+     * @return stránka obsahující DTO osob
      */
     Page<PersonDTO> getAll(Pageable pageable);
 
     /**
+     * Vrátí osobu podle jejího ID.
      *
-     * @param personId
-     * @return
+     * @param personId ID osoby, kterou chceme získat
      */
     PersonDTO getPerson(Long personId);
 
-    /**+
+    /**
+     * Aktualizuje údaje osoby podle jejího ID.
      *
-     * @param personId
-     * @param personDTO
-     * @return
+     * @param personId ID osoby, kterou chceme aktualizovat
+     * @param personDTO objekt s novými údaji osoby
+     * @return aktualizované DTO osoby
      */
     PersonDTO updatePerson(Long personId, PersonDTO personDTO);
 
     /**
+     * Vrací statistiky osob včetně jejich tržeb.
      *
-     * @return
+     * @return seznam statistik osob jako DTO
      */
     List<PersonStatisticDTO> getPersonStatistic();
 

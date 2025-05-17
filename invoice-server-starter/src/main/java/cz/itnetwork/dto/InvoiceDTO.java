@@ -9,6 +9,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Data Transfer Object (DTO) pro fakturu.
+ * *
+ * Používá se pro přenos dat o fakturách mezi vrstvami aplikace,
+ * například mezi službou a uživatelským rozhraním.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

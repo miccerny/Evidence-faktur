@@ -29,7 +29,10 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- *
+ * Entita reprezentující osobu v databázi.
+ * *
+ * Mapuje se na tabulku "person" a obsahuje základní
+ * informace o osobě, které se používají v aplikaci.
  */
 @Entity(name = "person")
 @Getter

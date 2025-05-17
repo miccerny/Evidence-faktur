@@ -23,6 +23,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementace služby pro správu faktur.
+ * *
+ * Obsahuje metody pro vytváření, aktualizaci,
+ * mazání a získávání informací o fakturách.
+ */
 @Service
 public class InvoiceServiceImpl implements  InvoiceService {
 
@@ -36,9 +42,11 @@ public class InvoiceServiceImpl implements  InvoiceService {
     private InvoiceMapper invoiceMapper;
 
     /**
+     * Vytvoří novou fakturu na základě dat z InvoiceDTO.
+     * Připraví entitu faktury, uloží ji do databáze a vrátí výslednou DTO reprezentaci.
      *
-     * @param invoiceDTO
-     * @return
+     * @param invoiceDTO data nové faktury
+     * @return uložená faktura jako InvoiceDTO
      */
     @Override
     public InvoiceDTO createInvoice(InvoiceDTO invoiceDTO) {
@@ -49,8 +57,12 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
+     * Vrátí stránkovaný seznam faktur podle zadaných filtrů.
+     * Používá InvoiceSpecification k aplikaci filtrů a Pageable k stránkování výsledků.
      *
-     * @return
+     * @param invoiceFilter objekt obsahující kritéria pro filtrování faktur
+     * @param pageable informace o stránkování (stránka, velikost, řazení)
+     * @return stránka faktur převedených na InvoiceDTO
      */
     @Override
     public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable) {
@@ -62,9 +74,11 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
+     * Vrátí seznam všech nákupů (faktur), kde kupující má zadané identifikační číslo.
+     * Metoda využívá interní pomocnou metodu getInvoiceByIdentificationNumber s parametrem BUYER.
      *
-     * @param identificationNumber
-     * @return
+     * @param identificationNumber identifikační číslo kupujícího
+     * @return seznam faktur odpovídajících zadanému identifikačnímu číslu kupujícího
      */
     @Override
     public List<InvoiceDTO> getAllPurchasesByIdentificationNumber(String identificationNumber) {
@@ -73,9 +87,11 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
+     * Vrátí seznam všech prodejů (faktur), kde prodávající má zadané identifikační číslo.
+     * Metoda používá interní pomocnou metodu getInvoiceByIdentificationNumber s parametrem SELLER.
      *
-     * @param identificationNumber
-     * @return
+     * @param identificationNumber identifikační číslo prodávajícího
+     * @return seznam faktur odpovídajících zadanému identifikačnímu číslu prodávajícího
      */
     @Override
     public List<InvoiceDTO> getAllSalesByIdentificationNumber(String identificationNumber) {
@@ -84,9 +100,10 @@ public class InvoiceServiceImpl implements  InvoiceService {
 
 
     /**
+     * Najde fakturu podle jejího ID a převede ji na DTO.
      *
-     * @param id
-     * @return
+     * @param id identifikátor faktury
+     * @return faktura jako InvoiceDTO
      */
     @Override
     public InvoiceDTO getInvoice(Long id) {
@@ -95,10 +112,12 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
+     * Aktualizuje existující fakturu podle zadaného ID a nových dat.
+     * Nejprve ověří, že faktura s daným ID existuje, poté připraví a uloží aktualizovanou entitu.
      *
-     * @param id
-     * @param invoiceDTO
-     * @return
+     * @param id identifikátor faktury, kterou chceme aktualizovat
+     * @param invoiceDTO nová data faktury
+     * @return aktualizovaná faktura jako InvoiceDTO
      */
     @Override
     public InvoiceDTO updateInvoice(Long id, InvoiceDTO invoiceDTO) {
@@ -109,8 +128,10 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
+     * Odstraní fakturu podle zadaného ID.
+     * Nejprve ověří, že faktura existuje, pak ji smaže z databáze.
      *
-     * @param id
+     * @param id identifikátor faktury, kterou chceme odstranit
      */
     @Override
     public void remove(Long id) {
@@ -119,8 +140,11 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
+     * Získá statistiky faktur zahrnující součet cen za aktuální rok,
+     * celkový součet cen za celou dobu a počet všech faktur.
+     * Pokud nejsou k dispozici žádné hodnoty, použije místo nich nulu.
      *
-     * @return
+     * @return objekt InvoiceStatisticsDTO obsahující tyto statistiky
      */
     @Override
     public InvoiceStatisticsDTO getStatistics() {
@@ -142,9 +166,12 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
+     * Načte fakturu podle jejího ID pomocí repository.
+     * Pokud faktura neexistuje, hodí výjimku NotFoundException s vhodnou zprávou.
      *
-     * @param id
-     * @return
+     * @param id identifikátor faktury
+     * @return nalezená entita faktury
+     * @throws NotFoundException pokud faktura s daným ID neexistuje
      */
     private InvoiceEntity fetchedInvoiceById(long id){
         try{
@@ -155,10 +182,15 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
+     * Připraví entitu faktury pro uložení do databáze na základě předané DTO.
      *
-     * @param invoiceDTO
-     * @param id
-     * @return
+     * - Převádí DTO na entitu.
+     * - Načte a nastaví reference na prodávajícího a kupujícího z databáze.
+     * - Pokud je zadáno ID, nastaví ho do entity (pro update).
+     *
+     * @param invoiceDTO data faktury ve formě DTO
+     * @param id volitelné ID faktury (používá se při aktualizaci)
+     * @return připravená InvoiceEntity připravená k uložení
      */
     private InvoiceEntity prepareInvoiceEntity(InvoiceDTO invoiceDTO, Long id){
         InvoiceEntity invoice = invoiceMapper.toEntity(invoiceDTO);
@@ -177,10 +209,15 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
+     * Vrátí seznam faktur spojených s osobou podle jejího identifikačního čísla a typu vztahu (kupující nebo prodávající).
+     * Nejprve ověří, zda osoba s daným identifikačním číslem existuje.
+     * Podle typu vztahu načte faktury, kde je osoba buď kupujícím, nebo prodávajícím.
+     * Výsledek převede na seznam DTO.
      *
-     * @param identificationNumber
-     * @param type
-     * @return
+     * @param identificationNumber identifikační číslo osoby
+     * @param type typ vztahu k fakturám (BUYER nebo SELLER)
+     * @return seznam faktur jako InvoiceDTO
+     * @throws NotFoundException pokud osoba s daným identifikačním číslem neexistuje
      */
     private List<InvoiceDTO> getInvoiceByIdentificationNumber(String identificationNumber, InvoiceRelationType type){
         personRepository.findByIdentificationNumber(identificationNumber)

@@ -38,13 +38,32 @@ import java.util.Optional;
 @EnableJpaRepositories
 public interface PersonRepository extends JpaRepository<PersonEntity, Long>, PagingAndSortingRepository<PersonEntity, Long> {
 
+    /**
+     * Najde osoby podle toho, zda jsou označeny jako skryté.
+     *
+     * @param hidden flag, jestli hledat skryté osoby (true = skryté)
+     * @param pageable stránkování výsledků (velikost stránky, číslo stránky, řazení)
+     * @return stránka osob, které odpovídají filtru podle stavu 'hidden'
+     */
     Page<PersonEntity> findByHidden(boolean hidden, Pageable pageable);
 
+    /**
+     * Najde osobu podle jejího identifikačního čísla (IČO).
+     *
+     * @param identificationNumber identifikační číslo osoby
+     * @return Optional obsahující nalezenou osobu nebo prázdný, pokud není nalezena
+     */
     Optional<PersonEntity> findByIdentificationNumber(String identificationNumber);
 
     /**
+     * Vrátí seznam osob spolu s celkovým součtem tržeb (cena faktur), kde jsou osoby prodávajícími.
+     * Používá LEFT JOIN, aby byly zahrnuty i osoby bez faktur (jejich tržby budou 0).
+     * Výsledky jsou seřazeny podle tržeb sestupně, a pak podle ID osoby vzestupně.
      *
-     * @return
+     * @return seznam Tuple, kde každý obsahuje:
+     *         - personId (ID osoby),
+     *         - personName (jméno osoby),
+     *         - revenue (součet cen faktur, případně 0)
      */
     @Query(value = """
     SELECT p.id AS personId, p.name AS personName, COALESCE(SUM(i.price), 0) AS revenue

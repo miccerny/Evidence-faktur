@@ -6,6 +6,12 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * DTO třída pro přenos statistických údajů o osobách.
+ * *
+ * Obsahuje souhrnné informace jako ID osoby, jméno a
+ * celkový příjem (tržby) spojené s danou osobou.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
