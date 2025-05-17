@@ -29,7 +29,6 @@ import {
   Navigate,
   useLocation
 } from "react-router-dom";
-
 import PersonIndex from "./persons/PersonIndex";
 import PersonDetail from "./persons/PersonDetail";
 import PersonForm from "./persons/PersonForm";
@@ -42,22 +41,30 @@ import PersonStatistics from "./statistics/PersonStatistics";
 import InvoiceStatistics from "./statistics/InvoiceStatistics";
 import './style.css';
 
-
-
 function AppContent() {
-
-  
   const location = useLocation();
   const showInvoiceStatistics = location.pathname === "/invoices";
   const showPersonStatistics = location.pathname === "/persons";
 
   return (
-    
-      <>
+    <>
       <nav className="mb-5 navbar navbar-expand-lg navbar-light bg-info w-100">
-          <div className="container">
+        <div className="container">
           <ul className="navbar-nav ms-auto">
-          
+            {showInvoiceStatistics && (
+              <li className="nav-item">
+                <Link to={"/invoices/statistics"} className="nav-link">
+                  Statistika faktur
+                </Link>
+              </li>
+            )}
+            {showPersonStatistics && (
+              <li className="nav-item">
+                <Link to={"/persons/statistics"} className="nav-link">
+                  Statistika osob
+                </Link>
+              </li>
+            )}
             <li className="nav-item">
               <Link to={"/persons"} className="nav-link">
                 Osoby
@@ -68,28 +75,9 @@ function AppContent() {
                 Faktury
               </Link>
             </li>
-            {showInvoiceStatistics && (
-            <li className="nav-item">
-              
-              <Link to={"/invoices/statistics"} className="nav-link">
-              Statistika faktur
-              </Link>
-            </li>
-            )}
-            {showPersonStatistics && (
-            <li className="nav-item">
-              
-              <Link to={"/persons/statistics"} className="nav-link">
-              Statistika osob
-              </Link>
-            </li>
-            )}
-
           </ul>
-
         </div>
-  </nav>
-        
+      </nav>
       <div className="container">
         <Routes>
           <Route index element={<Navigate to={"/persons"} />} />
@@ -99,37 +87,28 @@ function AppContent() {
             <Route path="create" element={<PersonForm />} />
             <Route path="edit/:id" element={<PersonForm />} />
           </Route>
-          <Route path="/purchasesAndSales/show/:identificationNumber/purchases" element={<PurchasesInvoice/>} />
+          <Route path="/purchasesAndSales/show/:identificationNumber/purchases" element={<PurchasesInvoice />} />
           <Route path="/purchasesAndSales/show/:identificationNumber/sales" element={<SalesInvoice />} />
-          
-        
-      
-        <Route index element={<Navigate to={"/invoices"}/>}/>
           <Route path="/invoices">
-            <Route index element={<InvoiceIndex />}/>
-            <Route path="show/:id" element={<InvoiceDetail/> } />
+            <Route index element={<InvoiceIndex />} />
+            <Route path="show/:id" element={<InvoiceDetail />} />
             <Route path="create" element={<InvoiceForm />} />
-            <Route path="edit/:id" element={<InvoiceForm />}/>
+            <Route path="edit/:id" element={<InvoiceForm />} />
           </Route>
-
-        <Route index element={<Navigate to={"/persons/statistics"}/>}/>
           <Route path="/persons/statistics">
-            <Route index element={<PersonStatistics />}/>
-        </Route>
-        <Route index element={<Navigate to={"/invoices/statistics"}/>}/>
+            <Route index element={<PersonStatistics />} />
+          </Route>
           <Route path="/invoices/statistics">
-            <Route index element={<InvoiceStatistics />}/>
-        </Route>
-
+            <Route index element={<InvoiceStatistics />} />
+          </Route>
         </Routes>
-        </div>
+      </div>
     </>
   );
 }
 
-export default function App(){
-  
-  return(
+export default function App() {
+  return (
     <Router>
       <AppContent />
     </Router>

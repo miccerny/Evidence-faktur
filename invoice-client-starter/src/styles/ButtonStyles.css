@@ -1,7 +1,42 @@
-.button-show{
-    columns: 1;
-}
 
 .btn-outline-warning.text-black {
   color: black;
+}
+
+.button {
+  padding: 5px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  color: black !important; /* Text je vždy černý */
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: white;
+}
+
+/* Modré tlačítko pro detail */
+.button-detail {
+  border: 1px solid #339af0; 
+}
+
+.button-detail:hover {
+  background-color: #cce5ff; /* tmavší modrá na hover */
+}
+
+/* Žluté tlačítko pro úpravu */
+.button-edit {
+  border: 1px solid #f0ad4e; /* světle žlutá */
+}
+
+.button-edit:hover {
+  background-color: #ffe680; /* sytější žlutá */
+}
+
+/* Červené tlačítko pro smazání */
+.button-delete {
+  border: 1px solid #dc3545; /* světle červená */
+}
+
+.button-delete:hover {
+  background-color: #f5b7b7; /* tmavší červená */
 }

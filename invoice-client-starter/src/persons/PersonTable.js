@@ -29,8 +29,7 @@ import '../styles/ButtonStyles.css'
 
 const ITEMS_PER_PAGE = 5;
 
-
-const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalElements, openCardId, toggleCard }) => {
+const PersonTable = ({ items, deletePerson, page, setPage, totalPages, totalElements, openCardId, toggleCard}) => {
 
     console.log("Aktuální stránka (page):", page, typeof page);
 
@@ -38,15 +37,18 @@ const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalEleme
         return <div>Načítání dat…</div>;
     }
 
+    
+
     return (
+        <>
+        
         <div className="container">
             <p>
-               Počet osob: {totalElements}
+                Počet osob: {totalElements}
             </p>
-
             <div className="row g-3">
                 {items.map((person, index) => (
-                    <div className="col-md-6 col-lg-12" key={person._id + 1}>
+                    <div className="col-md-6 col-lg-12" key={person._id}>
                         <div className="custom-card shadow-sm h-100">
                             <div className="card-body position-relative">
                                 <div className="d-flex justify-content-between align-items-center m-1"
@@ -54,46 +56,40 @@ const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalEleme
                                 >
                                     <h5 className="custom-card-title">
                                         {(page * ITEMS_PER_PAGE) + index + 1} - {person.name}
-                                        </h5>
-                                        <button className="btn btn-sm btn-outline-primary">
-                                            {openCardId === person._id ? "X" : "Akce"}
+                                    </h5>
+                                    <button className="btn btn-sm btn-outline-primary">
+                                        {openCardId === person._id ? "X" : "Akce"}
+                                    </button>
+                                </div>
+                                <div className={`action-panel mt-3 ${openCardId === person._id ? "open" : ""}`}>
+                                    <div className="d-grid gap-2">
+                                        <Link
+                                            to={"/persons/show/" + person._id}
+                                            className="button button-detail button-detail:hover"
+                                        >
+                                            Zobrazit
+                                        </Link>
+                                        <Link
+                                            to={"/persons/edit/" + person._id}
+                                            className="button button-edit button-edit:hover"
+                                        >
+                                            Upravit
+                                        </Link>
+                                        <button
+                                            onClick={() =>
+                                                deletePerson(person._id)
+                                            }
+                                            className="button button-delete button-delete:hover"
+                                        >
+                                            Odstranit
                                         </button>
-                                        </div>
-                                    <div className={`action-panel mt-3 ${openCardId === person._id ? "open" : ""}`}>
-                                        <div className="d-grid gap-2">
-                                        
-                                                <Link
-                                                    to={"/persons/show/" + person._id}
-                                                    className="btn btn-info"
-                                                >
-                                                    Zobrazit
-                                                </Link>
-                                                <Link
-                                                    to={"/persons/edit/" + person._id}
-                                                    className="btn btn-ms"
-                                                >
-                                                    Upravit
-                                                </Link>
-                                                <button
-                                                    onClick={() => 
-
-                                                        deletePerson(person._id)
-                                                    }
-                                                    className="dropdown-item text-danger"
-                                                >
-                                                    Odstranit
-                                                </button>
-                                        </div>
                                     </div>
                                 </div>
-                            
+                            </div>
                         </div>
                     </div>
-
-
                 ))}
             </div>
-
             <div className="d-flex justify-content-center align-items-center mt-4">
                 <div>
                     <button
@@ -113,14 +109,13 @@ const PersonTable = ({items, deletePerson, page, setPage, totalPages, totalEleme
                     <span className="ms-3">Stránka {page + 1} z {totalPages}</span>
                 </div>
             </div>
-
             <div className="mt-3">
                 <Link to={"/persons/create"} className="btn btn-success">
                     Nová osoba
                 </Link>
             </div>
-            </div>
-            );
+        </div>
+        </>
+    );
 };
-
-            export default PersonTable;
+export default PersonTable;

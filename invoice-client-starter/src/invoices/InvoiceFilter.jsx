@@ -1,22 +1,23 @@
-import React from "react";
+
 import InputSelect from "../components/InputSelect";
 import InputField from "../components/InputField";
 
 const InvoiceFilter = (props) => {
+    // Funkce volaná při změně hodnoty v některém z inputů/selectů
     const handleChange = (e) => {
         props.handleChange(e);
     }
-
+    // Funkce volaná při odeslání formuláře
     const handleSubmit = (e) => {
         props.handleSubmit(e);
     }
-
+    // Extrahování filtru z props pro snazší použití
     const filter = props.filter;
 
     return (
-
         <form onSubmit={handleSubmit}>
             <div className="row">
+                {/* Výběr dodavatele */}
                 <div className="col">
                     <InputSelect
                         name="sellerID"
@@ -27,6 +28,7 @@ const InvoiceFilter = (props) => {
                         value={filter.sellerID}
                     />
                 </div>
+                 {/* Výběr odběratele */}
                 <div className="col">
                     <InputSelect
                         name="buyerID"
@@ -37,6 +39,7 @@ const InvoiceFilter = (props) => {
                         value={filter.buyerID}
                     />
                 </div>
+                {/* Textové pole pro zadání části názvu produktu */}
                 <div className="col">
                     <InputField
                         type="text"
@@ -49,6 +52,7 @@ const InvoiceFilter = (props) => {
                 </div>
             </div>
             <div className="row">
+                {/* Minimální cena */}
                 <div className="col">
                     <InputField
                         type="number"
@@ -60,6 +64,7 @@ const InvoiceFilter = (props) => {
                         value={filter.minPrice ? filter.minPrice : ''}
                     />
                 </div>
+                {/* Maximální cena */}
                 <div className="col">
                     <InputField
                         type="number"
@@ -71,6 +76,7 @@ const InvoiceFilter = (props) => {
                         value={filter.maxPrice ? filter.maxPrice : ''}
                     />
                 </div>
+                {/* Limit počtu faktur k zobrazení */}
                 <div className="col">
                     <InputField
                         type="number"
@@ -83,6 +89,7 @@ const InvoiceFilter = (props) => {
                     />
                 </div>
             </div>
+            {/* Tlačítko pro odeslání formuláře */}
             <div className="row mt-2 rounded-1">
                 <div className="col d-flex justify-content-center">
                     <input
@@ -93,7 +100,6 @@ const InvoiceFilter = (props) => {
                 </div>
             </div>
         </form>
-
     );
 };
 export default InvoiceFilter;

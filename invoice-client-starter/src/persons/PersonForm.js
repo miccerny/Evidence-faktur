@@ -22,19 +22,18 @@
 
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-
 import {apiGet, apiPost, apiPut} from "../utils/api";
-
 import InputField from "../components/InputField";
 import InputCheck from "../components/InputCheck";
 import FlashMessage from "../components/FlashMessage";
-console.log("Načítám komponentu");
-
 import Country from "./Country";
 
+console.log("Načítám komponentu");
+
 const PersonForm = () => {
-    const navigate = useNavigate();
+    // React Router hook pro získání navigační funkce
     const {id} = useParams();
+    // Výchozí hodnota osoby, pokud se jedná o vytvoření nové osoby
     const [person, setPerson] = useState({
         name: "",
         identificationNumber: "",
@@ -50,32 +49,41 @@ const PersonForm = () => {
         country: Country.CZECHIA,
         note: ""
     });
+    // Stavové proměnné pro sledování průběhu odesílání formuláře
     const [sentState, setSent] = useState(false);
     const [successState, setSuccess] = useState(false);
     const [errorState, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
+    // Pokud existuje ID, načteme existující osobu z API při načtení komponenty
     useEffect(() => {
         if (id) {
+            setIsLoading(true);
             apiGet("/api/persons/" + id)
-            .then((data) => setPerson(data));
+            .then((data) => setPerson(data))
+            .finally(() => setIsLoading(false));
         }
     }, [id]);
 
+    // Zpracování odeslání formuláře – rozhoduje se podle toho, zda existuje ID
     const handleSubmit = (e) => {
         e.preventDefault();
+        setSubmitting(true);
 
         (id ? apiPut("/api/persons/" + id, person) : apiPost("/api/persons", person))
             .then((data) => {
                 setSent(true);
                 setSuccess(true);
-                navigate("/persons");
             })
             .catch((error) => {
                 console.log(error.message);
                 setError(error.message);
                 setSent(true);
                 setSuccess(false);
-            });
+            })
+            .finally(() => setSubmitting(false));
+
     };
 
     const sent = sentState;
@@ -83,18 +91,29 @@ const PersonForm = () => {
 
     return (
         <div>
+            {/* Flash message po odeslání formuláře */}
+            {sent && (
+                            <FlashMessage
+                                theme={success ? "success" : ""}
+                                text={success ? "Uložení osobnosti proběhlo úspěšně." : ""}
+                            />
+                        )}
+            {/* Pokud se načítají data z backendu, zobrazí se informační zpráva*/}
+            {isLoading && <p>Načítám data...</p>}
+             {/* Nadpis formuláře - závisí na tom, jestli upravujeme nebo vytváříme osobnost */}
             <h1>{id ? "Upravit" : "Vytvořit"} osobnost</h1>
             <hr/>
+
+            {/* Zobrazení chybové zprávy ze serveru */}
             {errorState ? (
                 <div className="alert alert-danger">{errorState}</div>
             ) : null}
-            {sent && (
-                <FlashMessage
-                    theme={success ? "success" : ""}
-                    text={success ? "Uložení osobnosti proběhlo úspěšně." : ""}
-                />
-            )}
+
+            
+
+            {/* Hlavní formulář */}
             <form onSubmit={handleSubmit}>
+                {/* Jednotlivá vstupní pole */}
                 <InputField
                     required={true}
                     type="text"
@@ -107,7 +126,6 @@ const PersonForm = () => {
                         setPerson({...person, name: e.target.value});
                     }}
                 />
-
                 <InputField
                     required={true}
                     type="text"
@@ -122,7 +140,7 @@ const PersonForm = () => {
 
                     disabled={id && person.identificationNumber !== ""}
                 />
-
+                 {/* DIČ */}
                 <InputField
                     required={true}
                     type="text"
@@ -135,7 +153,7 @@ const PersonForm = () => {
                         setPerson({...person, taxNumber: e.target.value});
                     }}
                 />
-
+                {/* Číslo účtu a bankovní info */}
                 <InputField
                     required={true}
                     type="text"
@@ -148,7 +166,6 @@ const PersonForm = () => {
                         setPerson({...person, accountNumber: e.target.value});
                     }}
                 />
-
                 <InputField
                     required={true}
                     type="text"
@@ -161,7 +178,6 @@ const PersonForm = () => {
                         setPerson({...person, bankCode: e.target.value});
                     }}
                 />
-
                 <InputField
                     required={true}
                     type="text"
@@ -174,7 +190,7 @@ const PersonForm = () => {
                         setPerson({...person, iban: e.target.value});
                     }}
                 />
-
+                {/* Telefon a mail */}
                 <InputField
                     required={true}
                     type="text"
@@ -187,7 +203,6 @@ const PersonForm = () => {
                         setPerson({...person, telephone: e.target.value});
                     }}
                 />
-
                 <InputField
                     required={true}
                     type="text"
@@ -200,7 +215,7 @@ const PersonForm = () => {
                         setPerson({...person, mail: e.target.value});
                     }}
                 />
-
+                {/* Adresa */}
                 <InputField
                     required={true}
                     type="text"
@@ -213,7 +228,6 @@ const PersonForm = () => {
                         setPerson({...person, street: e.target.value});
                     }}
                 />
-
                 <InputField
                     required={true}
                     type="text"
@@ -226,7 +240,6 @@ const PersonForm = () => {
                         setPerson({...person, zip: e.target.value});
                     }}
                 />
-
                 <InputField
                     required={true}
                     type="text"
@@ -239,7 +252,7 @@ const PersonForm = () => {
                         setPerson({...person, city: e.target.value});
                     }}
                 />
-
+                {/* Poznámka (nepovinná) */}
                 <InputField
                     required={false}
                     type="textarea"
@@ -250,9 +263,8 @@ const PersonForm = () => {
                         setPerson({...person, note: e.target.value});
                     }}
                 />
-
+                {/* Země - výběr pomocí radio buttonů */}
                 <h6>Země:</h6>
-
                 <InputCheck
                     type="radio"
                     name="country"
@@ -263,7 +275,6 @@ const PersonForm = () => {
                     }}
                     checked={Country.CZECHIA === person.country}
                 />
-
                 <InputCheck
                     type="radio"
                     name="country"
@@ -274,8 +285,8 @@ const PersonForm = () => {
                     }}
                     checked={Country.SLOVAKIA === person.country}
                 />
-
-                <input type="submit" className="btn btn-primary" value="Uložit"/>
+                {/* Tlačítko pro odeslání */}
+                <input type="submit" className="btn btn-primary" value="Uložit" disabled={submitting}/>
             </form>
         </div>
     );
