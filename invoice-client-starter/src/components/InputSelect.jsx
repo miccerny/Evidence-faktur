@@ -11,11 +11,12 @@ export function InputSelect(props) {
   console.log("InputSelect.items:", props.items);
   console.log("Array.isArray(items)?", Array.isArray(props.items));
   return (
-    <div className="form-group">
-      <label>{props.label}:</label>
+    <div className="mt-3">
+    <div className="form-label">
+      <label className="form-label fw-bold">{props.label}:</label>
       <select
         required={required}
-        className="browser-default form-select rounded-pill"
+        className="browser-default form-select rounded-pill mt-2"
         multiple={multiple}
         name={props.name}
         onChange={props.handleChange}
@@ -47,6 +48,7 @@ export function InputSelect(props) {
               </option>
             ))}
       </select>
+    </div>
     </div>
   );
 }

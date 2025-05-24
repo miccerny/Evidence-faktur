@@ -1,5 +1,5 @@
 spring.datasource:
-  url: jdbc:postgresql://localhost/InvoiceDatabase
+  url: jdbc:postgresql://localhost/postgres
   username: postgres
   password: fortment
   driver-class-name: org.postgresql.Driver
@@ -7,7 +7,6 @@ spring.datasource:
 
 server:
   port: 8080
-
 springdoc:
   api-docs.path: /api-docs
 

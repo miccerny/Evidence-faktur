@@ -6,9 +6,8 @@
 .button {
   padding: 5px 16px;
   border-radius: 6px;
-  font-weight: bold;
   cursor: pointer;
-  color: black !important; /* Text je vždy černý */
+  color: rgb(0, 0, 0) !important; /* Text je vždy černý */
   text-decoration: none;
   transition: background-color 0.3s ease, color 0.3s ease;
   background-color: white;

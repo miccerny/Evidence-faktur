@@ -1,0 +1,14 @@
+.custom-navbar {
+  background-color: #031474; /* Stejná jako původní header */
+  padding: 15px 20px;
+}
+
+.custom-navbar .nav-link {
+  color: white;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.custom-navbar .nav-link:hover {
+  text-decoration: underline;
+}

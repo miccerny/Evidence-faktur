@@ -4,18 +4,18 @@ import { apiGet, apiPost, apiPut } from "../utils/api";
 import FlashMessage from "../components/FlashMessage";
 import InputField from "../components/InputField";
 import InputSelect from "../components/InputSelect";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 
-const InvoiceForm = () => {
+const InvoiceForm = ({existingInvoiceData}) => {
     // Používáme hook pro navigaci mezi stránkami
     const navigate = useNavigate();
     // Získáme parametr "id" z URL, pokud je při úpravě faktury
     const { id } = useParams();
     // Stav pro seznam možných odběratelů
     const [buyerListState, setBuyerList] = useState([]);
-// Stav pro seznam možných dodavatelů 
+    // Stav pro seznam možných dodavatelů 
     const [sellerListState, setSellerList] = useState([]);
-
     // Stav pro data faktury (počáteční prázdné hodnoty)
     const [invoice, setInvoice] = useState({
         invoiceNumber: "",
@@ -34,26 +34,43 @@ const InvoiceForm = () => {
     const [successState, setSuccess] = useState(false);
     // Stav pro uložení chybové zprávy při selhání uložení
     const [errorState, setError] = useState(null);
+    const today = new Date().toISOString().split('T')[0]; 
 
     // useEffect se spustí při načtení komponenty nebo změně id
     useEffect(() => {
         if (id) {
             // Pokud máme id, načteme data existující faktury z API
             apiGet("/api/invoices/" + id)
-            .then((data) => {
-                setInvoice(data) // nastavíme data do stavu
-            });
+                .then((data) => {
+                    setInvoice(data) // nastavíme data do stavu
+                });
         }
         // Načteme seznam osob (odběratelé i dodavatelé)
         apiGet("/api/persons").then((data) => {
             setBuyerList(data.content),
-            setSellerList(data.content) // tady nastavujeme oba seznamy na stejná data
+                setSellerList(data.content) // tady nastavujeme oba seznamy na stejná data
         });
     }, [id]);
+
 
     // Funkce pro odeslání formuláře
     const handleSubmit = (e) => {
         e.preventDefault(); // zabráníme defaultnímu reloadu stránky
+
+        // jednoduchá validace datumu
+        if (invoice.issued > invoice.dueDate) {
+            setError("Datum vystavení nemůže být pozdější než datum splatnosti");
+            setSent(true);
+            setSuccess(false);
+            return;  // neodesílat data
+        }
+
+        if(invoice.seller == invoice.buyer){
+            setError("Odběratel nesmí být stejný jako dodavatel");
+            setSent(true);
+            setSuccess(false);
+            return;  // neodesílat data
+        }
 
         // Pokud je id, aktualizujeme fakturu (PUT), jinak vytvoříme novou (POST)
         (id ? apiPut("/api/invoices/" + id, invoice) : apiPost("/api/invoices", invoice))
@@ -74,7 +91,7 @@ const InvoiceForm = () => {
     const success = successState;
 
     return (
-        <div>
+        <div className="container mb-3">
             <h1>{id ? "Upravit" : "Vytvořit"} fakturu</h1>
             <hr />
             {/* Pokud máme chybu, zobrazíme ji */}
@@ -90,27 +107,29 @@ const InvoiceForm = () => {
             )}
             {/* Formulář pro zadání faktury */}
             <form onSubmit={handleSubmit}>
-                 {/* Číslo faktury */}
-                <InputField
-                    required={true}
-                    type="number"
-                    name="invoiceNumber"
-                    min="3"
-                    label="Číslo faktury"
-                    prompt="Zadej číslo"
-                    value={invoice.invoiceNumber}
-                    handleChange={(e) => {
-                        setInvoice({...invoice, invoiceNumber: e.target.value });
-                    }}
-                />
-                 {/* Výběr dodavatele */}
+                {/* Číslo faktury */}
+                <div className="mt-3">
+                    <InputField
+                        required={true}
+                        type="number"
+                        name="invoiceNumber"
+                        min="3"
+                        label="Číslo faktury"
+                        prompt="Zadej číslo"
+                        value={invoice.invoiceNumber}
+                        handleChange={(e) => {
+                            setInvoice({ ...invoice, invoiceNumber: e.target.value });
+                        }}
+                    />
+                </div>
+                {/* Výběr dodavatele */}
                 <InputSelect
                     required={true}
                     className="browser-default form-select"
                     name="seller"
                     label="Dodavatel"
                     handleChange={(e) => {
-                        setInvoice({ ...invoice, seller: { _id: e.target.value} });
+                        setInvoice({ ...invoice, seller: { _id: e.target.value } });
                     }}
                     value={invoice.seller.name}
                     items={sellerListState}
@@ -120,14 +139,14 @@ const InvoiceForm = () => {
                     required={true}
                     className="browser-default form-select"
                     name="buyer"
-                    label="Nakupující"
+                    label="Odběratel"
                     handleChange={(e) => {
-                        setInvoice({ ...invoice, buyer: { _id:  e.target.value }});
+                        setInvoice({ ...invoice, buyer: { _id: e.target.value } });
                     }}
                     value={invoice.buyer.name}
                     items={buyerListState}
                 />
-                 {/* Datum vystavení faktury */}
+                {/* Datum vystavení faktury */}
                 <InputField
                     required={true}
                     type="date"
@@ -192,7 +211,7 @@ const InvoiceForm = () => {
                         setInvoice({ ...invoice, vat: e.target.value });
                     }}
                 />
-                 {/* Volitelná poznámka */}
+                {/* Volitelná poznámka */}
                 <InputField
                     required={false}
                     type="textarea"
@@ -206,7 +225,7 @@ const InvoiceForm = () => {
                     }}
                 />
                 {/* Tlačítko pro odeslání formuláře */}
-                <input type="submit" className="btn btn-primary" value={"Uložit"} />
+                <input type="submit" className="btn btn-primary mt-3" value={"Uložit"} />
             </form>
         </div>
     );

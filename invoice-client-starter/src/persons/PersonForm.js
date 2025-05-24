@@ -27,6 +27,9 @@ import InputField from "../components/InputField";
 import InputCheck from "../components/InputCheck";
 import FlashMessage from "../components/FlashMessage";
 import Country from "./Country";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 
 console.log("Načítám komponentu");
 
@@ -110,10 +113,11 @@ const PersonForm = () => {
             ) : null}
 
             
-
+            <div className="mb-3">
             {/* Hlavní formulář */}
             <form onSubmit={handleSubmit}>
                 {/* Jednotlivá vstupní pole */}
+                <div className="mb-3">
                 <InputField
                     required={true}
                     type="text"
@@ -126,6 +130,8 @@ const PersonForm = () => {
                         setPerson({...person, name: e.target.value});
                     }}
                 />
+                </div>
+                <div className="mb-3">
                 <InputField
                     required={true}
                     type="text"
@@ -140,6 +146,7 @@ const PersonForm = () => {
 
                     disabled={id && person.identificationNumber !== ""}
                 />
+                </div>
                  {/* DIČ */}
                 <InputField
                     required={true}
@@ -288,6 +295,7 @@ const PersonForm = () => {
                 {/* Tlačítko pro odeslání */}
                 <input type="submit" className="btn btn-primary" value="Uložit" disabled={submitting}/>
             </form>
+            </div>
         </div>
     );
 };

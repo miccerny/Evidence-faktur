@@ -28,7 +28,7 @@ const InvoiceFilter = (props) => {
                         value={filter.sellerID}
                     />
                 </div>
-                 {/* Výběr odběratele */}
+                {/* Výběr odběratele */}
                 <div className="col">
                     <InputSelect
                         name="buyerID"

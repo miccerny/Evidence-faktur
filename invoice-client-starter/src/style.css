@@ -1,12 +1,27 @@
-#text{
- margin-bottom: auto;
+.seller-box, .buyer-box {
+  position: relative;
+  display: inline-block; /* nebo block dle potřeby */
 }
-.seller-details-wrapper {
+
+/* Wrapper, který zabírá místo, ale má nulovou výšku */
+.seller-details-wrapper, .buyer-details-wrapper {
+  position: absolute;
+  top: 100%; /* přímo pod tlačítko */
+  left: 0;
+  width: 100%;
+  max-height: none; /* odstraníme max-height z wrapperu */
+  overflow: visible;
+  z-index: 10;
+}
+
+/* Vnitřní obsah detailů */
+.seller-details-content, .buyer-details-content {
   overflow: hidden;
   transition: max-height 0.4s ease;
   max-height: 0;
 }
 
-.seller-details-wrapper.open {
-  max-height: 500px; /* nebo větší podle potřeby */
+/* Když je otevřeno, max-height se zvětší */
+.seller-details-content.open, .buyer-details-content.open {
+  max-height: 500px; /* nebo dle potřeby */
 }

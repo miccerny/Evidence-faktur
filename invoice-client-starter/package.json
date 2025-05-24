@@ -15,8 +15,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "concurrently \"npm run start-client\" \"npm run start-backend\"",
     "start-client": "react-scripts start",
+    "start": "concurrently \"npm run start-client\" \"npm run start-backend\"",
     "start-backend": "cd ../invoice-server-starter && mvn spring-boot:run",
     "build": "react-scripts build",
     "test": "react-scripts test",

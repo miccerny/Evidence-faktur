@@ -152,17 +152,10 @@ public class InvoiceServiceImpl implements  InvoiceService {
         BigDecimal allTimeSum = invoiceRepository.allTimeSum();
         long count = invoiceRepository.count();
 
-        BigDecimal currentSum = currentYearSum;
-        if(currentSum == null){
-            currentSum = BigDecimal.ZERO;
-        }
+        BigDecimal currentSum = currentYearSum != null ? currentYearSum : BigDecimal.ZERO;
+        BigDecimal allSum = allTimeSum != null ? allTimeSum : BigDecimal.ZERO;
 
-        BigDecimal allSum = allTimeSum;
-        if(allSum == null){
-            allTimeSum = BigDecimal.ZERO;
-        }
-
-        return new InvoiceStatisticsDTO(currentSum, allTimeSum, count);
+        return new InvoiceStatisticsDTO(currentSum, allSum, count);
     }
 
     /**
@@ -195,8 +188,8 @@ public class InvoiceServiceImpl implements  InvoiceService {
     private InvoiceEntity prepareInvoiceEntity(InvoiceDTO invoiceDTO, Long id){
         InvoiceEntity invoice = invoiceMapper.toEntity(invoiceDTO);
 
-        PersonEntity seller = personRepository.getReferenceById(invoice.getSeller().getId());
-        PersonEntity buyer = personRepository.getReferenceById(invoice.getBuyer().getId());
+        PersonEntity seller = getPersonById(invoice.getSeller().getId());
+        PersonEntity buyer = getPersonById((invoice.getBuyer().getId()));
 
         invoice.setSeller(seller);
         invoice.setBuyer(buyer);
@@ -233,6 +226,11 @@ public class InvoiceServiceImpl implements  InvoiceService {
                 .map(invoiceMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    private PersonEntity getPersonById(Long id) {
+        return personRepository.getReferenceById(id);
+    }
+
 
 
 
