@@ -3,10 +3,13 @@ package cz.itnetwork.controller;
 import cz.itnetwork.dto.UserDTO;
 import cz.itnetwork.entity.UserEntity;
 import cz.itnetwork.service.UserService;
+import cz.itnetwork.exceptions.DuplicateEmailException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,5 +56,10 @@ public class UserController {
         } catch (ClassCastException e) {
             throw new ServletException();
         }
+    }
+
+    @ExceptionHandler(ServletException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public void handleServletException() {
     }
 }

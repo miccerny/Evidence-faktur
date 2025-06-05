@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 export function InputField(props) {
   // podporované typy pro element input
-  const INPUTS = ["text", "number", "date"];
+  const INPUTS = ["text", "number", "date", "email", "password", "confirmPassword"];
 
   // validace elementu a typu
   const type = props.type.toLowerCase();
@@ -30,7 +30,7 @@ export function InputField(props) {
 
   return (
     <div className="mb-3">
-      <div className="form-label">
+      <div className="form-label col-5">
         <label className="form-label fw-bold">{props.label}:</label>
 
         {/* vykreslení aktuálního elementu */}

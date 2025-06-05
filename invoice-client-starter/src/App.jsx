@@ -40,17 +40,38 @@ import InvoiceForm from "./invoices/InvoiceForm";
 import PersonStatistics from "./statistics/PersonStatistics";
 import InvoiceStatistics from "./statistics/InvoiceStatistics";
 import './style.css';
+import RegistrationPage from "./registration/RegistrationPage";
+import { useSession } from "./contexts/session";
+import { apiDelete } from "./utils/api";
+import LoginPage from "./login/LoginPage";
+
 
 function AppContent() {
   const location = useLocation();
   const showInvoiceStatistics = location.pathname === "/invoices";
   const showPersonStatistics = location.pathname === "/persons";
+  const {session, setSession} = useSession();
+  const handleLogoutClick = () => {
+    apiDelete("/api/auth")
+      .finally(() => setSession({ data: null, status: "unauthorized" }));
+  }
 
   return (
     <>
       <nav className="mb-5 navbar navbar-expand-lg navbar-light bg-info w-100">
         <div className="container">
-          <ul className="navbar-nav ms-auto">
+          <ul className="navbar-nav ms col-6">
+        
+            <li className="nav-item">
+              <Link to={"/persons"} className="nav-link">
+                Osoby
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to={"/invoices"} className="nav-link">
+                Faktury
+              </Link>
+            </li>
             {showInvoiceStatistics && (
               <li className="nav-item">
                 <Link to={"/invoices/statistics"} className="nav-link">
@@ -65,16 +86,31 @@ function AppContent() {
                 </Link>
               </li>
             )}
-            <li className="nav-item">
-              <Link to={"/persons"} className="nav-link">
-                Osoby
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to={"/invoices"} className="nav-link">
-                Faktury
-              </Link>
-            </li>
+          </ul>
+          <ul className="navbar-nav ms">
+            {session.data ?
+              <>
+                <li className="nav-item">
+                  {session.data.email}
+                </li>
+                <li className="nav-item">
+                  <button className="" onClick={handleLogoutClick}>Odhlásit se</button>
+                </li>
+              </> : session.status === "loading" ?
+                <>
+                  <div className="spinner-border spinner-border-sm" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </>
+                : <>
+                  <li className="nav-item">
+                    <Link to={"/register"} className="nav-link">Registrace</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to={"/login"} className="nav-link">Přihlásit se</Link>
+                  </li>
+                </>
+                }
           </ul>
         </div>
       </nav>
@@ -101,6 +137,8 @@ function AppContent() {
           <Route path="/invoices/statistics">
             <Route index element={<InvoiceStatistics />} />
           </Route>
+          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/login" element={<LoginPage/>}/>
         </Routes>
       </div>
     </>

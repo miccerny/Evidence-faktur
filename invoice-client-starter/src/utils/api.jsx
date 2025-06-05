@@ -22,27 +22,33 @@
 
 
 
-import axios from "axios";
+import HttpRequestError from "../errors/HttpRequestError";
 
 
 const API_URL = "http://localhost:8080";
-axios.defaults.baseURL = API_URL;
 
-const fetchData = (url, requestOptions) => {
+const fetchData = async (url, requestOptions = {}) => {
     const apiUrl = `${API_URL}${url}`;
 
-    return fetch(apiUrl, requestOptions)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
-            }
+    const allRequestOptions = {
+        credentials: "include",
+        ...requestOptions,
+    };
 
-            if (requestOptions.method !== 'DELETE')
-                return response.json();
-        })
-        .catch((error) => {
-            throw error;
-        });
+    const response = await fetch(apiUrl, allRequestOptions);
+    
+    if (!response.ok) {
+        const errorMessage = await response.text().catch(() =>
+            `Network response was not ok: ${response.status} ${response.statusText}`
+        );
+        throw new HttpRequestError(errorMessage, response.status);
+    }
+
+    if (allRequestOptions.method !== 'DELETE')
+        return response.json();
+
+    return response.json();
+
 };
 
 export const apiGet = async (url, params) => {
@@ -57,13 +63,13 @@ export const apiGet = async (url, params) => {
 
     const response = await fetchData(apiUrl, requestOptions);
     console.log("Odpověď z API:", response);
-    return fetchData(apiUrl, requestOptions);
+    return response;
 };
 
 export const apiPost = (url, data) => {
     const requestOptions = {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
     };
 
@@ -73,7 +79,7 @@ export const apiPost = (url, data) => {
 export const apiPut = (url, data) => {
     const requestOptions = {
         method: "PUT",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
     };
 
