@@ -1,3 +1,4 @@
 node_modules/
 invoice-client-starter/package.json
 /invoice-client-starter/node_modules
+invoice-server-starter/.idea/compiler.xml
