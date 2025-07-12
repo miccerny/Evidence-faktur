@@ -52,7 +52,10 @@ export function InputField(props) {
           <input
             required={required}
             type={type}
-            className="form-control rounded-pill shadow-sm mt-2"
+            className={
+              "form-control rounded-pill shadow-sm mt-2" +
+              (props.error ? " is-invalid" : "")
+            }
             placeholder={props.prompt}
             minLength={minlength}
             min={min}
@@ -63,6 +66,9 @@ export function InputField(props) {
             onInvalid={handleInvalid}
             onInput={handleInput}
           />
+        )}
+        {props.error && (
+          <div className="invalid-feedback d-block">{props.error}</div>
         )}
       </div>
     </div>

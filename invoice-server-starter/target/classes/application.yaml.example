@@ -1,0 +1,22 @@
+spring.datasource:
+  url: jdbc:postgresql://localhost/mydb
+  username: USERNAME
+  password: PASSWORD
+  driver-class-name: org.postgresql.Driver
+
+
+server:
+  port: 8080
+springdoc:
+  api-docs.path: /api-docs
+
+spring:
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
