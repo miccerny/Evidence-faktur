@@ -45,6 +45,13 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public PersonDTO addPerson(PersonDTO personDTO) {
+        if(personRepository.existsByIdentificationNumber(personDTO.getIdentificationNumber())){
+            throw new IllegalArgumentException("Firma s tímto IČO již existuje");
+        }
+
+        if (personDTO.getIdentificationNumber() == null || personDTO.getIdentificationNumber().isBlank()) {
+            throw new IllegalArgumentException("IČO nesmí být prázdné");
+        }
         PersonEntity entity = personMapper.toEntity(personDTO);
         entity = personRepository.save(entity);
 

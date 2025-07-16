@@ -42,6 +42,10 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long>, Pag
      *         - personName (jméno osoby),
      *         - revenue (součet cen faktur, případně 0)
      */
+
+    boolean existsByIdentificationNumber(String identificationNumber);
+
+
     @Query(value = """
     SELECT p.id AS personId, p.name AS personName, COALESCE(SUM(i.price), 0) AS revenue
     FROM person p

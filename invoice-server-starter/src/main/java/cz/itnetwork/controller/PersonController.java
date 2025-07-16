@@ -41,6 +41,7 @@ public class PersonController {
      */
     @PostMapping("")
     public PersonDTO addPerson(@RequestBody PersonDTO personDTO) {
+
         return  personService.addPerson(personDTO);
     }
 

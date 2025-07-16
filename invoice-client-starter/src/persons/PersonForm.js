@@ -49,7 +49,12 @@ const PersonForm = () => {
 
     // Zpracování odeslání formuláře – rozhoduje se podle toho, zda existuje ID
     const handleSubmit = (e) => {
-        e.target.setCustomValidity(customMessage);
+        e.preventDefault();
+
+        if (!person.identificationNumber || person.identificationNumber.trim() === "") {
+            setError("Prosím zadejte IČO");
+            return; // Přeruš odeslání
+        }
 
         setSubmitting(true);
         (id ? apiPut("/api/persons/" + id, person) : apiPost("/api/persons", person))
@@ -123,6 +128,7 @@ const PersonForm = () => {
                             handleChange={(e) => {
                                 setPerson({ ...person, identificationNumber: e.target.value });
                             }}
+                            error={errorState}
 
                             disabled={id && person.identificationNumber !== ""}
                         />
