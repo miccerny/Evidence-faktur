@@ -31,8 +31,9 @@
 ## Jak spustit projekt
 1. Instalace PostgreSQL
 2. Naklonování repozitáře
-   ```bash
-  git clone miccerny/Evidence-faktur.git
+      ```bash
+   git clone https://github.com/miccerny/Evidence-faktur.git
+  
 3. Otevřít projekt v IDE
 4. Instalace node.js
 5. Instalace knihoven node_modules
