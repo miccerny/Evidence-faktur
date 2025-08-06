@@ -7,45 +7,45 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 /**
- * Mapper pro převod mezi InvoiceEntiy a InvoiceDTO
- * *
- * Používá knihovnu Mapstructur pro automatické generování
+ * Mapper for converting between InvoiceEntity and InvoiceDTO.
+ * <p>
+ * Uses the MapStruct library for automatic code generation.
  */
 @Mapper(componentModel = "spring")
 public interface InvoiceMapper {
 
     /**
-     * Převede objekt InvoiceDTO na InvoiceEntity.
-     * *
-     * Slouží k transformaci dat z formátu používaného ve vrstvě API(DTO)
-     * do formátu vhodného pro uložení do databáze (Entity)
+     * Converts an InvoiceDTO object to an InvoiceEntity.
+     * <p>
+     * Used to transform data from the format used in the API layer (DTO)
+     * to the format suitable for database storage (Entity).
      *
-     * @param source - vstupní objekt typu InvoiceDTO
-     * @return - převedený objekt typu InvoiceEntity
+     * @param source - input object of type InvoiceDTO
+     * @return - converted object of type InvoiceEntity
      */
     InvoiceEntity toEntity(InvoiceDTO source);
 
     /**
-     * Převede objekt typu InvoiceEntity na InvoiceDTO
-     * *
-     *  Používá se k transformaci dat z entity (databázového modelu)
-     *  do DTO (objektu používaného v API).
+     * Converts an InvoiceEntity object to InvoiceDTO.
+     * <p>
+     * Used to transform data from the entity (database model)
+     * to a DTO (object used in the API).
      *
-     * @param source - vstupní objekt typu InvoiceEntity
-     * @return - převedený objekt typu InvoiceDTO
+     * @param source - input object of type InvoiceEntity
+     * @return - converted object of type InvoiceDTO
      */
     @Mapping(target = "seller", source = "seller")
     @Mapping(target = "buyer", source = "buyer")
     InvoiceDTO toDTO(InvoiceEntity source);
 
     /**
-     * Aktualizuje existující InvoiceEntity hodnotami z InvoiceDTO.
+     * Updates an existing InvoiceEntity with values from InvoiceDTO.
+     * <p>
+     * Used when you want to update the entity's data (e.g., from the database)
+     * directly with values from a DTO, without creating a new object.
      *
-     * Používá se, když chceme změnit data entity (např. z databáze)
-     * bez vytváření nového objektu, přímo podle dat z DTO
-     *
-     * @param source - zdrojový objekt InvoiceDTO s novými daty
-     * @param entity - cílový objekt InvoiceEntity, který bude aktualizován
+     * @param source - source InvoiceDTO object with new data
+     * @param entity - target InvoiceEntity object to be updated
      */
     void updateEntity(InvoiceDTO source, @MappingTarget InvoiceEntity entity);
 }

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import InputField from "../components/InputField";
 import { useState } from "react";
-import { apiPost} from "../utils/api";
+import { apiPost } from "../utils/api";
 import FlashMessage from "../components/FlashMessage";
 import HttpRequestError from "../errors/HttpRequestError";
 
@@ -54,7 +54,7 @@ const RegistrationPage = () => {
                 />
             )}
             {/* Pokud se načítají data z backendu, zobrazí se informační zpráva*/}
-{sent ? (
+            {sent ? (
                 <div className="alert alert-danger">{errorMessageState}</div>
             ) : null}
             <h1>Registrace uživatele</h1>

@@ -4,40 +4,38 @@ package cz.itnetwork.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 /**
- * Třída reprezentující strukturu chybové odpovědi API
+ * Class representing the structure of an API error response.
  *
- * Používá se pro zasílání informací o chybách klientovi.
- * Obsahuje HTTP status kod, zprávu a čas vzniku chyby.
+ * Used to send error information to the client.
+ * Contains the HTTP status code, error message, and the timestamp when the error occurred.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ApiError {
 
-    /** HTTP status kód chyby, např. 404 nebo 500 */
+    /** HTTP status code of the error, e.g., 404 or 500 */
     private int status;
 
-    /** Popis chybové zprávy */
+    /** Description of the error message */
     private String message;
 
-    /** Čas, kdy chyba nastala, ve formátu ISO (String) */
+    /** Time when the error occurred, in ISO format (String) */
     private String timestamp;
 
     /**
-     * Konstruktor nastavující status a zprávu,
-     * zároveň nastaví aktuální čas jako timestamp.
+     * Constructor setting status and message,
+     * and automatically sets the current time as the timestamp.
      *
-     * @param status HTTP status kód
-     * @param message chybová zpráva
+     * @param status HTTP status code
+     * @param message error message
      */
     public ApiError(int status, String message) {
         this.status = status;
         this.message = message;
         this.timestamp = LocalDateTime.now().toString();
     }
-
 }

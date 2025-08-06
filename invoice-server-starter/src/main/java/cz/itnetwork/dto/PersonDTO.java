@@ -8,10 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Data Transfer Object (DTO) pro osobu.
- * *
- * Používá se pro přenos dat o osobě mezi vrstvami aplikace,
- * například mezi službou a uživatelským rozhraním.
+ * Data Transfer Object (DTO) for a person.
+ * <p>
+ * Used for transferring person data between application layers,
+ * for example between the service layer and the user interface.
  */
 @Data
 @AllArgsConstructor
@@ -21,64 +21,65 @@ public class PersonDTO {
     @JsonProperty("_id")
     private Long id;
 
-    // Jméno osoby, nesmí být prázdné a musí mít alespoň 3 znaky
-    @NotEmpty(message = "Jméno nesmí být prázdné")
-    @Size(min = 3, message = "Jméno musí mít alespoň 3 znaky")
+    // Person's name; must not be empty and must have at least 3 characters
+    @NotEmpty(message = "Name must not be empty")
+    @Size(min = 3, message = "Name must have at least 3 characters")
     private String name;
 
-    // IČO (identifikační číslo osoby), musí být přesně 8 číslic a nesmí být prázdné
-    @Pattern(regexp = "^\\d{8}$", message = "Číslo musí být platné 8-místné")
-    @NotEmpty(message = "IČ nesmí být prázdné")
+    // Identification number (IČO), must be exactly 8 digits and not empty
+    @Pattern(regexp = "^\\d{8}$", message = "Number must be a valid 8-digit number")
+    @NotEmpty(message = "Identification number must not be empty")
     private String identificationNumber;
 
-    // DIČ (daňové identifikační číslo), musí být přesně 10 číslic a nesmí být prázdné
-    @Pattern(regexp = "^\\d{10}$", message = "Číslo DIČ musí být platné 10ti-místné")
-    @NotEmpty(message = "Nesmí být prázdné")
+    // Tax identification number (DIČ), must be exactly 10 digits and not empty
+    @Pattern(regexp = "^\\d{10}$", message = "Tax number must be a valid 10-digit number")
+    @NotEmpty(message = "Tax number must not be empty")
     private String taxNumber;
 
-    // Číslo bankovního účtu, nesmí být prázdné
-    @NotEmpty(message = "Číslo účtu nesmí být prázdné")
+    // Bank account number, must not be empty
+    @NotEmpty(message = "Account number must not be empty")
     private String accountNumber;
 
-    // Kód banky, musí být přesně 4 číslice a nesmí být prázdný
-    @Pattern(regexp = "^\\d{4}$", message = "Neplatný kód banky.")
-    @NotEmpty(message = "Kód banky nesmí být prázdný")
+    // Bank code, must be exactly 4 digits and not empty
+    @Pattern(regexp = "^\\d{4}$", message = "Invalid bank code.")
+    @NotEmpty(message = "Bank code must not be empty")
     private String bankCode;
 
-    // IBAN – musí odpovídat formátu CZ nebo obecně IBAN, nesmí být prázdný
-    @Pattern(regexp = "^(CZ\\d{2}\\d{8,10}\\/\\d{4}|[A-Z]{2}\\d{2}[A-Z0-9]{4,30})$", message = "Neplatné číslo účtu.")
-    @NotEmpty(message = "IBAN nesmí být prázdný")
+    // IBAN – must match the CZ or general IBAN format, must not be empty
+    @Pattern(regexp = "^(CZ\\d{2}\\d{8,10}\\/\\d{4}|[A-Z]{2}\\d{2}[A-Z0-9]{4,30})$", message = "Invalid IBAN number.")
+    @NotEmpty(message = "IBAN must not be empty")
     private String iban;
 
-    // Telefonní číslo ve formátu +kódzeměčíslo, nesmí být prázdné
-    @Pattern(regexp = "^\\+\\d{1,3}\\d{4,14}$", message = "Neplatné telefonní číslo.")
-    @NotEmpty(message = "Telefonní číslo musí být vyplněné")
+    // Telephone number in the format +countrycodeNumber, must not be empty
+    @Pattern(regexp = "^\\+\\d{1,3}\\d{4,14}$", message = "Invalid telephone number.")
+    @NotEmpty(message = "Telephone number must be provided")
     private String telephone;
 
-    // Emailová adresa, musí být validní a nesmí být prázdná
-    @Email(message = "Vyplňte platný email")
-    @NotEmpty(message = "Email nesmí být prázdný")
+    // Email address, must be valid and not empty
+    @Email(message = "Please enter a valid email")
+    @NotEmpty(message = "Email must not be empty")
     private String mail;
 
-    // Ulice (adresa), musí obsahovat platné znaky a nesmí být prázdná
-    @Pattern(regexp = "^[A-Za-zá-žÁ-Ž0-9\\s-]+(,\\s?[0-9]+)?$", message = "Zadejte platnou adresu")
-    @NotEmpty(message = "Ulice musí být vyplněná")
+    // Street (address), must contain valid characters and must not be empty
+    @Pattern(regexp = "^[A-Za-zá-žÁ-Ž0-9\\s-]+(,\\s?[0-9]+)?$", message = "Enter a valid address")
+    @NotEmpty(message = "Street must be provided")
     private String street;
 
-    // PSČ, musí odpovídat formátu (např. 12345 nebo 12345-6789) a nesmí být prázdné
-    @NotEmpty(message = "PSČ nesmí být prázdné")
-    @Pattern(regexp = "^\\d{4,10}(-\\d{4})?$", message = "Neplatné PSČ.")
+    // ZIP code, must match the format (e.g. 12345 or 12345-6789) and must not be empty
+    @NotEmpty(message = "ZIP code must not be empty")
+    @Pattern(regexp = "^\\d{4,10}(-\\d{4})?$", message = "Invalid ZIP code.")
     private String zip;
 
-    // Město, jen písmena, mezery a pomlčky, nesmí být prázdné
-    @Pattern(regexp = "^[A-Za-zá-žÁ-Ž\\s-]+$", message = "Vyplňte platné město")
-    @NotEmpty(message = "Prosím vyplňte název města")
+    // City, only letters, spaces and hyphens allowed, must not be empty
+    @Pattern(regexp = "^[A-Za-zá-žÁ-Ž\\s-]+$", message = "Please enter a valid city name")
+    @NotEmpty(message = "Please enter the city name")
     private String city;
 
-    // Země, musí být vybraná (není prázdná)
-    @NotEmpty(message = "Vyberte název země")
+    // Country, must be selected (not empty)
+    @NotEmpty(message = "Please select a country")
     private Countries country;
 
     private String note;
 
+    private String ownerEmail;
 }

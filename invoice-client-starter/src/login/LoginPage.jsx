@@ -4,36 +4,58 @@ import InputField from "../components/InputField";
 import { useSession } from "../contexts/session";
 import { useEffect, useState } from "react";
 import { apiPost } from "../utils/api";
+import HttpRequestError from "../errors/HttpRequestError";
 
 
 const LoginPage = () => {
 
     const [valuesState, setValuesState] = useState({ email: "", password: "" });
-    const [errorMessageState, setErrorMessageState] = useState(null);
     const { session, setSession } = useSession();
     const navigate = useNavigate();
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
 
     useEffect(() => {
-        if (session.data) {
+        if (session.status === "authenticated") {
             navigate("/");
         }
-    }, [session]);
+    }, [session.status]);
 
     const handleChange = (e) => {
         const fieldName = e.target.name;
         setValuesState({ ...valuesState, [fieldName]: e.target.value });
-    }
+
+        if (fieldName === "email") setEmailError("");
+        if (fieldName === "password") setPasswordError("");
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         apiPost("/api/auth", valuesState)
-            .then(data => setSession({ data, status: "authenticated" }))
-            .catch(e => {
+            .then(data => {
+                setSession({ data, status: "authenticated" });
+                navigate("/");
+            })
+            .catch((e) => {
                 if (e instanceof HttpRequestError) {
-                    e.response.text().then(message => setErrorMessageState(message));
-                    return;
+
+                    if (e.data?.error === "EMAIL_NOT_FOUND") {
+                        setEmailError(e.data.message);
+                        setPasswordError("");
+                    } else if (e.data?.error === "BAD_PASSWORD") {
+                        setPasswordError(e.data.message);
+                        setEmailError("");
+                    } else {
+                        setEmailError("");
+                        setPasswordError(e.message || "Neznámá chyba při přihlášení");
+                    }
+
+                } else {
+                    setEmailError("");
+                    setPasswordError("Chyba při komunikaci se serverem");
+
                 }
-                setErrorMessageState("Při komunikaci se serverem nastala chyba.");
             });
     }
 
@@ -41,7 +63,6 @@ const LoginPage = () => {
         <div>
             <h1>Přihlášení</h1>
             <form onSubmit={handleSubmit}>
-                {errorMessageState ? <FlashMessage theme={"danger"} text={errorMessageState}></FlashMessage> : null}
 
                 <InputField
                     type="email"
@@ -51,6 +72,7 @@ const LoginPage = () => {
                     value={valuesState.email}
                     prompt="E-mail"
                     name="email" />
+                {emailError && <div className="text-danger">{emailError}</div>}
                 <InputField
                     type="password"
                     required={true}
@@ -59,7 +81,7 @@ const LoginPage = () => {
                     value={valuesState.password}
                     prompt={"Heslo"}
                     name="password" />
-
+                {passwordError && <div className="text-danger">{passwordError}</div>}
                 <input type="submit" className="btn btn-primary mt-2" value="Přihlásit se" />
             </form>
         </div>

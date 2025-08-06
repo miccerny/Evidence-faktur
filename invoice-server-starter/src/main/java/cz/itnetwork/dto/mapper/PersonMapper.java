@@ -4,46 +4,49 @@ package cz.itnetwork.dto.mapper;
 import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.entity.PersonEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 /**
- * Mapper pro převod mezi PersonEntity a PersonDTO
- * *
- * Používá knihovnu Mapstructur pro automatické generování
+ * Mapper for converting between PersonEntity and PersonDTO.
+ * <p>
+ * Uses the MapStruct library for automatic code generation.
  */
 @Mapper(componentModel = "spring")
 public interface PersonMapper {
 
     /**
-     * Převede objekt PersonDTO na PersonEntity.
-     * *
-     * Slouží k transformaci dat z formátu používaného ve vrstvě API(DTO)
-     * do formátu vhodného pro uložení do databáze (Entity)
+     * Converts a PersonDTO object to PersonEntity.
+     * <p>
+     * Used to transform data from the format used in the API layer (DTO)
+     * to the format suitable for database storage (Entity).
      *
-     * @param source - vstupní objekt typu PersonDTO
-     * @return - převedený objekt typu PersonEntity
+     * @param source - input object of type PersonDTO
+     * @return - converted object of type PersonEntity
      */
     PersonEntity toEntity(PersonDTO source);
 
     /**
-     * Převede objekt PersonEntity na PersonDTO.
-     * *
-     * Slouží k transformaci dat z databázové entity
-     * do formátu vhodného pro přenos přes API (DTO).
+     * Converts a PersonEntity object to PersonDTO.
+     * <p>
+     * Used to transform data from the database entity
+     * to the format suitable for transfer over API (DTO).
      *
-     * @param source vstupní objekt typu PersonEntity
-     * @return převedený objekt typu PersonDTO
+     * @param source input object of type PersonEntity
+     * @return converted object of type PersonDTO
      */
+    @Mapping(target = "ownerEmail", source = "owner.email")
     PersonDTO toDTO(PersonEntity source);
 
     /**
-     * Aktualizuje existující InvoiceEntity hodnotami z PersonDTO.
-     * *
-     * Používá se, když chceme změnit data entity (např. z databáze)
-     * bez vytváření nového objektu, přímo podle dat z DTO
+     * Updates an existing PersonEntity with values from PersonDTO.
+     * <p>
+     * Used when you want to update entity data (e.g., from the database)
+     * directly with data from a DTO, without creating a new object.
      *
-     * @param source - zdrojový objekt PersonDTO s novými daty
-     * @param person - cílový objekt PersonEntity, který bude aktualizován
+     * @param source - source PersonDTO object with new data
+     * @param person - target PersonEntity object to be updated
      */
+    @Mapping(target = "owner", ignore = true)
     void updateEntity(PersonDTO source, @MappingTarget PersonEntity person);
 }

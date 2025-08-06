@@ -1,12 +1,13 @@
 package cz.itnetwork.entity.filtration;
 
+import cz.itnetwork.constant.InvoiceStatus;
 import lombok.Data;
 
 /**
- * Třída sloužící k filtrování faktur podle různých kritérií.
- * *
- * Obsahuje pole, která umožňují zadat parametry pro vyhledávání
- * a filtrování faktur v aplikaci.
+ * Class used for filtering invoices by various criteria.
+ * <p>
+ * Contains fields that allow you to specify parameters for searching
+ * and filtering invoices in the application.
  */
 @Data
 public class InvoiceFilter {
@@ -17,5 +18,6 @@ public class InvoiceFilter {
     private Integer maxPrice;
     private String product;
     private Integer limit=10;
+    private InvoiceStatus status;
 
 }

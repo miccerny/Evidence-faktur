@@ -7,7 +7,14 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
+/**
+ * Data Transfer Object (DTO) for user information.
+ * <p>
+ * Used to transfer user data between different layers of the application,
+ * for example between the frontend and backend.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,4 +32,6 @@ public class UserDTO {
 
     @JsonProperty("isAdmin")
     private boolean admin;
+
+    private List<String> authorities;
 }

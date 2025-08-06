@@ -4,22 +4,21 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Hlavní třída aplikace s anotací SpringBootApplication.
- * *
- * Slouží jako vstupní bod pro spuštění Spring Boot aplikace.
+ * Main application class with the @SpringBootApplication annotation.
+ * <p>
+ * Serves as the entry point for running the Spring Boot application.
  */
 @SpringBootApplication
 public class ApplicationMain {
 
     /**
-     * Vstupní bod aplikace.
-     * *
-     * Spustí Spring Boot aplikaci pomocí metody run.
+     * Entry point of the application.
+     * <p>
+     * Starts the Spring Boot application using the run method.
      *
-     * @param args argumenty příkazové řádky
+     * @param args command-line arguments
      */
     public static void main(String[] args) {
-
         SpringApplication.run(ApplicationMain.class, args);
     }
 }

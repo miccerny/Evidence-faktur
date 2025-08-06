@@ -2,6 +2,7 @@ package cz.itnetwork.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import cz.itnetwork.constant.InvoiceStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,10 +10,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
- * Entita reprezentující fakturu v databázi.
- * *
- * Mapuje se na tabulku "invoice" a obsahuje údaje
- * o fakturách používané v aplikaci.
+ * Entity representing an invoice in the database.
+ * <p>
+ * Maps to the "invoice" table and contains invoice data used in the application.
  */
 @Entity(name="invoice")
 @Getter

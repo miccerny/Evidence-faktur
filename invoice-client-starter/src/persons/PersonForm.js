@@ -7,11 +7,18 @@ import FlashMessage from "../components/FlashMessage";
 import Country from "./Country";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { useSession } from "../contexts/session";
 
 
 console.log("Načítám komponentu");
 
 const PersonForm = () => {
+
+    const { session } = useSession();
+    const authorities = session.data?.authorities || [];
+    const isAdmin = authorities.some(auth => auth.authority === "ROLE_ADMIN");
+    const isUser = authorities.some(auth => auth.authority === "ROLE_USER");
+    const isLoadingSession = session.status === "loading";
     // React Router hook pro získání navigační funkce
     const { id } = useParams();
     // Výchozí hodnota osoby, pokud se jedná o vytvoření nové osoby
@@ -39,13 +46,20 @@ const PersonForm = () => {
 
     // Pokud existuje ID, načteme existující osobu z API při načtení komponenty
     useEffect(() => {
-        if (id) {
-            setIsLoading(true);
-            apiGet("/api/persons/" + id)
-                .then((data) => setPerson(data))
-                .finally(() => setIsLoading(false));
+        if ((isUser || isAdmin) && id && session.status === "authenticated") {
+            
+                setIsLoading(true);
+                apiGet("/api/persons/" + id)
+                    .then((data) => setPerson(data))
+                    .catch((err) => {
+                        console.error("Chyba při načítání osoby:", err);
+                        setError("Nepodařilo se načíst data osoby.");
+                    })
+                    .finally(() => setIsLoading(false));
+
+            
         }
-    }, [id]);
+    }, [isUser, isAdmin, id, session.status]);
 
     // Zpracování odeslání formuláře – rozhoduje se podle toho, zda existuje ID
     const handleSubmit = (e) => {
@@ -57,7 +71,10 @@ const PersonForm = () => {
         }
 
         setSubmitting(true);
-        (id ? apiPut("/api/persons/" + id, person) : apiPost("/api/persons", person))
+        const personToSend = {...person};
+        delete personToSend.ownerEmail;
+
+        (id ? apiPut("/api/persons/" + id, personToSend) : apiPost("/api/persons", personToSend))
             .then((data) => {
                 setSent(true);
                 setSuccess(true);
@@ -75,6 +92,15 @@ const PersonForm = () => {
     const sent = sentState;
     const success = successState;
 
+    if (!isUser && !isAdmin) {
+        return (
+            <div className="d-flex justify-content-center mt-2">
+                <div className="spinner-border spinner-border-sm" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        );
+    }
     return (
         <div>
             {/* Flash message po odeslání formuláře */}

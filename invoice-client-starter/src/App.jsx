@@ -5,7 +5,8 @@ import {
   Route,
   Routes,
   Navigate,
-  useLocation
+  useLocation,
+  useNavigate
 } from "react-router-dom";
 import PersonIndex from "./persons/PersonIndex";
 import PersonDetail from "./persons/PersonDetail";
@@ -29,9 +30,22 @@ function AppContent() {
   const showInvoiceStatistics = location.pathname === "/invoices";
   const showPersonStatistics = location.pathname === "/persons";
   const {session, setSession} = useSession();
+  const navigate = useNavigate();
   const handleLogoutClick = () => {
-    apiDelete("/api/auth")
-      .finally(() => setSession({ data: null, status: "unauthorized" }));
+    apiDelete("/api/logout").then(() => {
+        setSession({ data: null, status: "unauthenticated" });
+        navigate("/");
+  });
+  };
+
+  if(session.status === "loading"){
+      return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Načítám...</span>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -66,29 +80,25 @@ function AppContent() {
             )}
           </ul>
           <ul className="navbar-nav ms">
-            {session.data ?
+            {session.data ?(
               <>
                 <li className="nav-item">
                   {session.data.email}
                 </li>
                 <li className="nav-item">
-                  <button className="" onClick={handleLogoutClick}>Odhlásit se</button>
+                  <button className="nav-link" onClick={handleLogoutClick}>Odhlásit se</button>
                 </li>
-              </> : session.status === "loading" ?
+              </> 
+            ):( 
                 <>
-                  <div className="spinner-border spinner-border-sm" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                </>
-                : <>
                   <li className="nav-item">
                     <Link to={"/register"} className="nav-link">Registrace</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to={"/login"} className="nav-link">Přihlásit se</Link>
+                    <Link to={"/auth"} className="nav-link">Přihlásit se</Link>
                   </li>
                 </>
-                }
+                )}
           </ul>
         </div>
       </nav>
@@ -103,7 +113,10 @@ function AppContent() {
           </Route>
           <Route path="/purchasesAndSales/show/:identificationNumber/purchases" element={<PurchasesInvoice />} />
           <Route path="/purchasesAndSales/show/:identificationNumber/sales" element={<SalesInvoice />} />
-          <Route path="/invoices">
+          <Route path="/invoices" element={
+            session.status === "authenticated"
+            ? <InvoiceIndex/> : <Navigate to="/auth" />
+          }>
             <Route index element={<InvoiceIndex />} />
             <Route path="show/:id" element={<InvoiceDetail />} />
             <Route path="create" element={<InvoiceForm />} />
@@ -116,13 +129,13 @@ function AppContent() {
             <Route index element={<InvoiceStatistics />} />
           </Route>
           <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/auth" element={<LoginPage/>}/>
         </Routes>
       </div>
     </>
   );
-}
 
+}
 export default function App() {
   return (
     <Router>

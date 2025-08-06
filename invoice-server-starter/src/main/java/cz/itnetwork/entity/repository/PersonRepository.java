@@ -2,6 +2,7 @@ package cz.itnetwork.entity.repository;
 
 
 import cz.itnetwork.entity.PersonEntity;
+import cz.itnetwork.entity.UserEntity;
 import jakarta.persistence.Tuple;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,36 +17,34 @@ import java.util.Optional;
 public interface PersonRepository extends JpaRepository<PersonEntity, Long>, PagingAndSortingRepository<PersonEntity, Long> {
 
     /**
-     * Najde osoby podle toho, zda jsou označeny jako skryté.
+     * Finds persons based on whether they are marked as hidden.
      *
-     * @param hidden flag, jestli hledat skryté osoby (true = skryté)
-     * @param pageable stránkování výsledků (velikost stránky, číslo stránky, řazení)
-     * @return stránka osob, které odpovídají filtru podle stavu 'hidden'
+     * @param hidden flag indicating whether to search for hidden persons (true = hidden)
+     * @param pageable paging information (page size, page number, sorting)
+     * @return a page of persons matching the 'hidden' status filter
      */
     Page<PersonEntity> findByHidden(boolean hidden, Pageable pageable);
 
+    Page<PersonEntity> findByOwner(UserEntity userEntity, Pageable pageable);
+
     /**
-     * Najde osobu podle jejího identifikačního čísla (IČO).
+     * Finds a person by their identification number (IČO).
      *
-     * @param identificationNumber identifikační číslo osoby
-     * @return Optional obsahující nalezenou osobu nebo prázdný, pokud není nalezena
+     * @param identificationNumber the person's identification number
+     * @return an Optional containing the found person or empty if not found
      */
     Optional<PersonEntity> findByIdentificationNumber(String identificationNumber);
 
     /**
-     * Vrátí seznam osob spolu s celkovým součtem tržeb (cena faktur), kde jsou osoby prodávajícími.
-     * Používá LEFT JOIN, aby byly zahrnuty i osoby bez faktur (jejich tržby budou 0).
-     * Výsledky jsou seřazeny podle tržeb sestupně, a pak podle ID osoby vzestupně.
+     * Returns a list of persons together with the total sum of revenue (invoice prices) where they are sellers.
+     * Uses LEFT JOIN to include persons without invoices (their revenue will be 0).
+     * The results are ordered by revenue descending, then by person ID ascending.
      *
-     * @return seznam Tuple, kde každý obsahuje:
-     *         - personId (ID osoby),
-     *         - personName (jméno osoby),
-     *         - revenue (součet cen faktur, případně 0)
+     * @return a list of Tuple objects, each containing:
+     *         - personId (person's ID),
+     *         - personName (person's name),
+     *         - revenue (sum of invoice prices, or 0 if none)
      */
-
-    boolean existsByIdentificationNumber(String identificationNumber);
-
-
     @Query(value = """
     SELECT p.id AS personId, p.name AS personName, COALESCE(SUM(i.price), 0) AS revenue
     FROM person p
@@ -54,4 +53,13 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long>, Pag
     ORDER BY revenue DESC, p.id ASC
     """, nativeQuery = true)
     List<Tuple> getPersonSumPrice();
+
+    /**
+     * Checks whether a person with the given identification number exists.
+     *
+     * @param identificationNumber the person's identification number
+     * @return true if a person with this identification number exists, false otherwise
+     */
+    boolean existsByIdentificationNumber(String identificationNumber);
+
 }

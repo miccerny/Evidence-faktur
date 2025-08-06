@@ -1,9 +1,9 @@
 package cz.itnetwork.constant;
 
 /**
- * Výčet podporovaných zemí v aplikaci.
- * *
- * Obsahuje aktuálně Českou republiku a Slovensko.
+ * Enumeration of supported countries in the application.
+ * <p>
+ * Currently includes Czechia and Slovakia.
  */
 public enum Countries {
     CZECHIA, SLOVAKIA

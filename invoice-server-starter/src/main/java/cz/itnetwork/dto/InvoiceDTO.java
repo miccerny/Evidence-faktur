@@ -6,15 +6,13 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
-
 /**
- * Data Transfer Object (DTO) pro fakturu.
- * *
- * Používá se pro přenos dat o fakturách mezi vrstvami aplikace,
- * například mezi službou a uživatelským rozhraním.
+ * Data Transfer Object (DTO) for an invoice.
+ * <p>
+ * Used for transferring invoice data between application layers,
+ * for example between the service layer and the user interface.
  */
 @Data
 @AllArgsConstructor

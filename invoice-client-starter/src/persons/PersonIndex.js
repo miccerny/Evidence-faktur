@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { apiDelete, apiGet } from "../utils/api";
 import PersonTable from "./PersonTable";
 import FlashMessage from "../components/FlashMessage";
+import { useSession } from "../contexts/session";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -22,7 +23,10 @@ const PersonIndex = () => {
     const toggleCard = (id) => {
         setOpenCardId(previousId => (previousId === id ? null : id));
     }
-    // Smazání osoby a načtení aktualizovaného seznamu
+    const {session} = useSession();
+    const [loading, setLoading] = useState(true);
+
+        // Smazání osoby a načtení aktualizovaného seznamu
     const deletePerson = async (id) => {
         try {
             await apiDelete(`/api/persons/${id}`); // volání API pro smazání
@@ -43,6 +47,11 @@ const PersonIndex = () => {
     };
     // Načtení seznamu osob při změně stránky
     useEffect(() => {
+        if(session.status === "loading") return;
+
+        setLoading(true);
+
+        const url = session.status === "authenticated"
         apiGet("/api/persons", { page, size: ITEMS_PER_PAGE })
             .then((data) => {
                 console.log("Data z API:", data);
@@ -52,6 +61,9 @@ const PersonIndex = () => {
             })
             .catch((err) => {
                 console.error("Chyba při načítání osob:", err);
+                if(err.status === 401){
+                    alert("Musíte být přihlášei!")
+                }
             });
     }, [page]); // effect se spustí vždy při změně stránky
 
