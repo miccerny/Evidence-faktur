@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {useParams } from "react-router-dom";
 import { apiGet, apiPost, apiPut } from "../utils/api";
 import InputField from "../components/InputField";
 import InputCheck from "../components/InputCheck";
@@ -15,10 +15,11 @@ console.log("Načítám komponentu");
 const PersonForm = () => {
 
     const { session } = useSession();
-    const authorities = session.data?.authorities || [];
-    const isAdmin = authorities.some(auth => auth.authority === "ROLE_ADMIN");
-    const isUser = authorities.some(auth => auth.authority === "ROLE_USER");
-    const isLoadingSession = session.status === "loading";
+    const roles = (session.data?.authorities ?? []).map(a =>
+        typeof a === "string" ? a : a?.authority
+    );
+    const isAdmin = roles.includes("ROLE_ADMIN");
+    const isUser = roles.includes("ROLE_USER");
     // React Router hook pro získání navigační funkce
     const { id } = useParams();
     // Výchozí hodnota osoby, pokud se jedná o vytvoření nové osoby
@@ -46,20 +47,19 @@ const PersonForm = () => {
 
     // Pokud existuje ID, načteme existující osobu z API při načtení komponenty
     useEffect(() => {
-        if ((isUser || isAdmin) && id && session.status === "authenticated") {
-            
-                setIsLoading(true);
-                apiGet("/api/persons/" + id)
-                    .then((data) => setPerson(data))
-                    .catch((err) => {
-                        console.error("Chyba při načítání osoby:", err);
-                        setError("Nepodařilo se načíst data osoby.");
-                    })
-                    .finally(() => setIsLoading(false));
+        if (session.status !== "authenticated") return;
+        if (!id) return;
 
-            
-        }
-    }, [isUser, isAdmin, id, session.status]);
+        setIsLoading(true);
+        apiGet(`/api/persons/${id}`)
+            .then((data) => setPerson(prev => ({ ...prev, ...data })))
+                .catch((err) => {
+                    console.error("Chyba při načítání osoby:", err);
+                    setError("Nepodařilo se načíst data osoby.");
+                })
+                .finally(() => setIsLoading(false));
+
+    }, [session.status, id]);
 
     // Zpracování odeslání formuláře – rozhoduje se podle toho, zda existuje ID
     const handleSubmit = (e) => {
@@ -71,7 +71,7 @@ const PersonForm = () => {
         }
 
         setSubmitting(true);
-        const personToSend = {...person};
+        const personToSend = { ...person };
         delete personToSend.ownerEmail;
 
         (id ? apiPut("/api/persons/" + id, personToSend) : apiPost("/api/persons", personToSend))
@@ -92,7 +92,7 @@ const PersonForm = () => {
     const sent = sentState;
     const success = successState;
 
-    if (!isUser && !isAdmin) {
+    if (session.status === "loading") {
         return (
             <div className="d-flex justify-content-center mt-2">
                 <div className="spinner-border spinner-border-sm" role="status">
@@ -101,6 +101,11 @@ const PersonForm = () => {
             </div>
         );
     }
+    if (!isUser && !isAdmin) {
+        return <p>Nemáte oprávnění pro zobrazení této stránky.</p>;
+    }
+
+
     return (
         <div>
             {/* Flash message po odeslání formuláře */}

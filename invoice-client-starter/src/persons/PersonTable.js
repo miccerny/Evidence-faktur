@@ -15,14 +15,12 @@ const PersonTable = ({ items, deletePerson, page, setPage, totalPages, totalElem
     const userEmail = session.data?.email;
 
     console.log("Render PersonTable", session.status);
-
     console.log("Aktuální stránka (page):", page, typeof page);
     console.log("Session:", session);
+    
     if (session.status === "loading") {
         return <div>Načítání dat…</div>;
     }
-
-
 
     return (
         <>
