@@ -9,57 +9,57 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 /**
- * Rozhraní definující základní operace pro správu osob.
- * *
- * Zahrnuje metody pro přidání, aktualizaci, odstranění
- * a načtení informací o osobách.
+ * Interface defining basic operations for managing persons.
+ * <p>
+ * Includes methods for adding, updating, deleting,
+ * and retrieving person information.
  */
 public interface PersonService {
 
     /**
-     * Přidá novou osobu do systému.
+     * Adds a new person to the system.
      *
-     * @param personDTO -  data nové osoby
-     * @return -  DTO právě uložené osoby s přiřazeným ID
+     * @param personDTO data for the new person
+     * @return DTO of the newly saved person with an assigned ID
      */
     PersonDTO addPerson(PersonDTO personDTO);
 
     /**
-     * Označí osobu se zadaným ID jako skrytou (soft delete).
+     * Marks the person with the given ID as hidden (soft delete).
      *
-     * @param id ID osoby, která má být skryta
+     * @param id ID of the person to be hidden
      */
     void removePerson(long id);
 
     /**
-     * Vrátí stránkovaný seznam všech aktivních osob.
+     * Returns a paginated list of all active persons.
      *
-     * @param pageable informace o stránkování a řazení výsledků
-     * @return stránka obsahující DTO osob
+     * @param pageable pagination and sorting information
+     * @return a page containing person DTOs
      */
     Page<PersonDTO> getAll(Pageable pageable);
 
     /**
-     * Vrátí osobu podle jejího ID.
+     * Retrieves a person by their ID.
      *
-     * @param personId ID osoby, kterou chceme získat
+     * @param personId ID of the person to retrieve
+     * @return DTO of the found person
      */
     PersonDTO getPerson(Long personId);
 
     /**
-     * Aktualizuje údaje osoby podle jejího ID.
+     * Updates the data of the person with the given ID.
      *
-     * @param personId ID osoby, kterou chceme aktualizovat
-     * @param personDTO objekt s novými údaji osoby
-     * @return aktualizované DTO osoby
+     * @param personId ID of the person to update
+     * @param personDTO object containing the new person data
+     * @return updated person DTO
      */
     PersonDTO updatePerson(Long personId, PersonDTO personDTO);
 
     /**
-     * Vrací statistiky osob včetně jejich tržeb.
+     * Returns statistics for persons, including their revenues.
      *
-     * @return seznam statistik osob jako DTO
+     * @return list of person statistics as DTOs
      */
     List<PersonStatisticDTO> getPersonStatistic();
-
 }

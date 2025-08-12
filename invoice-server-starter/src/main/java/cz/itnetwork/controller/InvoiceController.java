@@ -15,101 +15,87 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Controller, který poskytuje API pro práci s fakturami.
+ * Controller that provides API endpoints for working with invoices.
  *
- * Všechny požadavky na faktury začínají požadavkem "/api/invoices".
- * Tento controller zpracovává operace jako získání, vytvoření, úpravu,
- * smazání faktur a také získání statistik.
+ * <p>All requests related to invoices start with the path {@code /api/invoices}.
+ * This controller handles operations such as retrieving, creating, updating,
+ * deleting invoices, as well as retrieving invoice statistics.</p>
  */
 @RestController
 @RequestMapping("/api/invoices")
 public class InvoiceController {
 
-    /**
-     * Injektuje (vkládá) instanci služby InvoiceService.
-     * *
-     * Díky anotaci @Autowired zajistí Spring, že zde bude
-     * dostupný správný objekt InvoiceService, který se používá
-     * pro práci s fakturami.
-     */
+    /** Injected service for handling invoice operations. */
     @Autowired
     private InvoiceService invoiceService;
 
     /**
-     * Vytvoří novou fakturu na základě vstupních údaju
+     * Creates a new invoice based on the provided input data.
      *
-     * @param invoiceDTO - objekt s daty faktury, která má být vytvořena
-     * @return nově vytvořená faktura včetně vygenerovaného a přiděleného ID
+     * @param invoiceDTO the invoice data to be created
+     * @return the newly created invoice including the generated ID
      */
     @Secured("ROLE_USER")
     @PostMapping("")
-    public InvoiceDTO createInvoice(@RequestBody InvoiceDTO invoiceDTO){
+    public InvoiceDTO createInvoice(@RequestBody InvoiceDTO invoiceDTO) {
         return invoiceService.createInvoice(invoiceDTO);
     }
 
-
     /**
-     * Vrací seznam všech faktur s limitem 5 faktur na jednu webovou stránku a objekt filtru pro filtrování faktur dle parametrů.
+     * Returns a paginated list of invoices with a default page size of 5,
+     * using an optional filter for narrowing results by parameters such as amount, date, etc.
      *
-     * @param invoiceFilter - objekt pro filtrování faktur dle zadaných libovolných parametrů (částka, datum atd.)
-     * @param pageable - parametry stránkování (velikost stránky, stránka, řazení)
-     * @return - stránkovaný seznam faktur vyhovujících zadaným filtrům
+     * @param invoiceFilter object containing filtering parameters
+     * @param pageable pagination settings (page number, page size, sorting)
+     * @return a page of invoices matching the given filter
      */
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
     @GetMapping({"", "/"})
-    public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, @PageableDefault(size = 5) Pageable pageable, UserEntity userEntity){
-        return invoiceService.getAll(invoiceFilter, pageable, userEntity);
+    public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, @PageableDefault(size = 5) Pageable pageable) {
+        return invoiceService.getAll(invoiceFilter, pageable);
     }
 
-
-
     /**
-     *  Vrací detail konkrétní faktury včetně detailu nakupující a prodávající osoby
+     * Returns the details of a specific invoice, including seller and buyer information.
      *
-     * @param invoiceId - ID unikátní parametr faktury, která má být načtena
-     * @return - vrací detail faktury dle unikátního paramatru "invoiceId" včetně objektu nakupujícího a prodávajícího
+     * @param invoiceId the unique ID of the invoice
+     * @return the invoice details as a DTO
      */
     @GetMapping({"/{invoiceId}/", "/{invoiceId}"})
-    public InvoiceDTO getInvoice(@PathVariable Long invoiceId){
+    public InvoiceDTO getInvoice(@PathVariable Long invoiceId) {
         return invoiceService.getInvoice(invoiceId);
     }
 
     /**
-     * Aktualizuje existující fakturu podl jejího ID
+     * Updates an existing invoice by its ID.
      *
-     * @param invoiceId - ID faktury, kterou chceme upravit
-     * @param invoiceDTO - objekt obsahující nové inforamce o faktuře
-     * @return - aktualizovaná faktura jako DTO
+     * @param invoiceId the ID of the invoice to update
+     * @param invoiceDTO the new invoice data
+     * @return the updated invoice as a DTO
      */
     @Secured("ROLE_USER")
-    @PutMapping({"/{invoiceId}/","/{invoiceId}"})
-    public InvoiceDTO updateInvoice(@PathVariable Long invoiceId, @RequestBody InvoiceDTO invoiceDTO){
+    @PutMapping({"/{invoiceId}/", "/{invoiceId}"})
+    public InvoiceDTO updateInvoice(@PathVariable Long invoiceId, @RequestBody InvoiceDTO invoiceDTO) {
         return invoiceService.updateInvoice(invoiceId, invoiceDTO);
     }
 
     /**
-     * Odstraní fakturu podle jeího ID.
+     * Deletes an invoice by its ID.
      *
-     * @param invoiceId - ID faktury, kterou chceme smazat
+     * @param invoiceId the ID of the invoice to delete
      */
-    @Secured("ROLE_ADMIN")
     @DeleteMapping({"/{invoiceId}", "/{invoiceId}/"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeInvoice(@PathVariable Long invoiceId){
+    public void removeInvoice(@PathVariable Long invoiceId) {
         invoiceService.remove(invoiceId);
     }
 
     /**
-     * Vrací statistiky týkající se faktur.
+     * Returns invoice statistics.
      *
-     * @return ResponseEntity obsahující data statistiky faktur s HTTP stavem 200 Ok.
+     * @return a ResponseEntity containing invoice statistics with HTTP status 200 (OK)
      */
-    @Secured("ROLE_USER")
     @GetMapping({"/statistics/", "/statistics"})
-    public ResponseEntity<InvoiceStatisticsDTO> getStatistics(){
+    public ResponseEntity<InvoiceStatisticsDTO> getStatistics() {
         InvoiceStatisticsDTO statisticsDTO = invoiceService.getStatistics();
         return ResponseEntity.ok(statisticsDTO);
     }

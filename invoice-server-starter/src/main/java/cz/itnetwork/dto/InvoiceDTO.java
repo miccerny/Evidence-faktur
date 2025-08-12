@@ -11,50 +11,59 @@ import java.time.LocalDate;
 
 
 /**
- * Data Transfer Object (DTO) pro fakturu.
- * *
- * Používá se pro přenos dat o fakturách mezi vrstvami aplikace,
- * například mezi službou a uživatelským rozhraním.
+ * Data Transfer Object (DTO) for an invoice.
+ *
+ * <p>Used to transfer invoice data between application layers,
+ * for example, between the service layer and the user interface.</p>
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class InvoiceDTO {
 
+    /** Unique identifier of the invoice. */
     @JsonProperty("_id")
     private Long id;
 
-    @NotEmpty(message = "Číslo faktury nesmí být prázdné")
+    /** Invoice number (must not be empty). */
+    @NotEmpty(message = "Invoice number must not be empty")
     private String invoiceNumber;
 
-    @NotNull(message = "Dodavatel musí být vyplněn")
+    /** Seller details (must be provided). */
+    @NotNull(message = "Seller must be provided")
     private PersonDTO seller;
-    @NotNull(message = "Odběratel musí být vyplněn")
+
+    /** Buyer details (must be provided). */
+    @NotNull(message = "Buyer must be provided")
     private PersonDTO buyer;
 
+    /** Date when the invoice was issued (must be today or in the future). */
     @FutureOrPresent
-    @NotNull(message = "Datum musí být vyplněno")
+    @NotNull(message = "Issue date must be provided")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate issued;
 
+    /** Due date for payment (must be in the future). */
     @Future
-    @NotNull(message = "Datum musí být vyplněno")
+    @NotNull(message = "Due date must be provided")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dueDate;
 
-    @NotEmpty(message = "Název productu nesmí být prázdný")
+    /** Name of the product or service (must not be empty). */
+    @NotEmpty(message = "Product name must not be empty")
     private String product;
 
-    @Min(value = 1, message = "Cena musí být alespoň 1")
-    @NotNull(message = "Cena musí být vyplněna")
+    /** Price of the product or service (must be at least 1). */
+    @Min(value = 1, message = "Price must be at least 1")
+    @NotNull(message = "Price must be provided")
     private float price;
 
-    @NotNull(message = "DPH musí být vyplněno")
-    @Min(value = 0, message = "DPH musí být minimálně 0")
-    @Max(value = 100, message = "DPH může být maximálně 100")
+    /** VAT percentage (0–100). */
+    @NotNull(message = "VAT must be provided")
+    @Min(value = 0, message = "VAT must be at least 0")
+    @Max(value = 100, message = "VAT must be at most 100")
     private double vat;
 
-
+    /** Optional note related to the invoice. */
     private String note;
-
 }

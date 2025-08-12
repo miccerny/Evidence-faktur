@@ -7,18 +7,22 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * DTO třída pro přenos statistických údajů o fakturách.
- * *
- * Obsahuje souhrnné informace, jako jsou například
- * celkové částky nebo počet faktur.
+ * Data Transfer Object (DTO) for transferring invoice statistics.
+ *
+ * <p>Contains aggregated information such as the total amounts
+ * and the total number of invoices.</p>
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class InvoiceStatisticsDTO {
 
+    /** Total amount of invoices for the current year. */
     private BigDecimal currentYearSum;
-    private BigDecimal allTimeSum;
-    private long invoicesCount;
 
+    /** Total amount of invoices for all time. */
+    private BigDecimal allTimeSum;
+
+    /** Total number of invoices. */
+    private long invoicesCount;
 }

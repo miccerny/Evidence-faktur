@@ -2,8 +2,6 @@ package cz.itnetwork.service;
 
 import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.InvoiceStatisticsDTO;
-import cz.itnetwork.entity.InvoiceEntity;
-import cz.itnetwork.entity.UserEntity;
 import cz.itnetwork.entity.filtration.InvoiceFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,74 +9,75 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 /**
- * Rozhraní definující operace pro správu faktur.
- * *
- * Zahrnuje metody pro vytváření, úpravu, odstranění
- * a získávání faktur.
+ * Service interface defining operations for invoice management.
+ * <p>
+ * Includes methods for creating, updating, deleting,
+ * and retrieving invoices.
  */
 public interface InvoiceService {
 
     /**
-     * Vytvoří novou fakturu podle předaných dat.
+     * Creates a new invoice based on the provided data.
      *
-     * @param invoiceDTO data faktury k vytvoření
-     * @return vytvořená faktura jako InvoiceDTO
+     * @param invoiceDTO the data of the invoice to be created
+     * @return the created invoice as an InvoiceDTO
      */
     InvoiceDTO createInvoice(InvoiceDTO invoiceDTO);
 
     /**
-     * Vrátí stránkovaný seznam faktur podle zadaných filtrů.
+     * Returns a paginated list of invoices based on the given filters.
      *
-     * @param invoiceFilter kritéria pro filtrování faktur
-     * @param pageable informace o stránkování (stránka, velikost, řazení)
-     * @return stránka faktur odpovídajících filtrům
+     * @param invoiceFilter criteria for filtering invoices
+     * @param pageable pagination information (page number, page size, sorting)
+     * @return a page of invoices matching the filters
      */
-    Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable, UserEntity userEntity);
+    Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable);
 
     /**
-     * Najde fakturu podle jejího ID.
+     * Retrieves an invoice by its ID.
      *
-     * @param id identifikátor faktury
-     * @return faktura jako InvoiceDTO, pokud existuje
+     * @param id the unique identifier of the invoice
+     * @return the invoice as an InvoiceDTO, if found
      */
     InvoiceDTO getInvoice(Long id);
 
     /**
-     * Vrátí všechny prodeje (faktury), kde prodávající má zadané identifikační číslo.
+     * Retrieves all sales (invoices) where the seller has the specified identification number.
      *
-     * @param identificationNumber identifikační číslo prodávajícího
-     * @return seznam faktur podle identifikačního čísla prodávajícího
+     * @param identificationNumber the seller's identification number
+     * @return a list of invoices for the given seller identification number
      */
     List<InvoiceDTO> getAllSalesByIdentificationNumber(String identificationNumber);
 
     /**
-     * Vrátí všechny nákupy (faktury), kde kupující má zadané identifikační číslo.
+     * Retrieves all purchases (invoices) where the buyer has the specified identification number.
      *
-     * @param identificationNumber identifikační číslo kupujícího
-     * @return seznam faktur odpovídajících zadanému identifikačnímu číslu kupujícího
+     * @param identificationNumber the buyer's identification number
+     * @return a list of invoices for the given buyer identification number
      */
     List<InvoiceDTO> getAllPurchasesByIdentificationNumber(String identificationNumber);
 
     /**
-     * Aktualizuje existující fakturu podle jejího ID a nových dat.
+     * Updates an existing invoice by its ID using the provided data.
      *
-     * @param id identifikátor faktury, kterou chceme aktualizovat
-     * @param invoiceDTO nová data faktury
-     * @return aktualizovaná faktura jako InvoiceDTO
+     * @param id the ID of the invoice to be updated
+     * @param invoiceDTO the new data for the invoice
+     * @return the updated invoice as an InvoiceDTO
      */
     InvoiceDTO updateInvoice(Long id, InvoiceDTO invoiceDTO);
 
     /**
-     * Odstraní fakturu podle jejího ID.
+     * Deletes an invoice by its ID.
      *
-     * @param id identifikátor faktury, kterou chceme smazat
+     * @param id the ID of the invoice to be deleted
      */
     void remove(Long id);
 
     /**
-     * Vrátí statistiky faktur (například souhrnné údaje jako počet faktur, součet cen apod.).
+     * Retrieves statistics related to invoices, such as the total number of invoices,
+     * total amount, and other aggregated data.
      *
-     * @return objekt s statistikami faktur
+     * @return an InvoiceStatisticsDTO containing invoice statistics
      */
     InvoiceStatisticsDTO getStatistics();
 }

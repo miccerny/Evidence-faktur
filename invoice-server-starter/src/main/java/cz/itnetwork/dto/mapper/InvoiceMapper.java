@@ -7,46 +7,45 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 /**
- * Mapper pro převod mezi InvoiceEntiy a InvoiceDTO
- * *
- * Používá knihovnu Mapstructur pro automatické generování
+ * Mapper for converting between {@link InvoiceEntity} and {@link InvoiceDTO}.
+ *
+ * <p>Uses the MapStruct library to automatically generate mapping implementations
+ * for transforming data between the persistence layer (entities) and the API layer (DTOs).</p>
  */
 @Mapper(componentModel = "spring")
 public interface InvoiceMapper {
 
     /**
-     * Převede objekt InvoiceDTO na InvoiceEntity.
-     * *
-     * Slouží k transformaci dat z formátu používaného ve vrstvě API(DTO)
-     * do formátu vhodného pro uložení do databáze (Entity)
+     * Converts an {@link InvoiceDTO} to an {@link InvoiceEntity}.
      *
-     * @param source - vstupní objekt typu InvoiceDTO
-     * @return - převedený objekt typu InvoiceEntity
+     * <p>Used to transform API-layer objects (DTO) into a database-ready
+     * persistence model (Entity).</p>
+     *
+     * @param source the {@link InvoiceDTO} to convert
+     * @return the mapped {@link InvoiceEntity}
      */
     InvoiceEntity toEntity(InvoiceDTO source);
 
     /**
-     * Převede objekt typu InvoiceEntity na InvoiceDTO
-     * *
-     *  Používá se k transformaci dat z entity (databázového modelu)
-     *  do DTO (objektu používaného v API).
+     * Converts an {@link InvoiceEntity} to an {@link InvoiceDTO}.
      *
-     * @param source - vstupní objekt typu InvoiceEntity
-     * @return - převedený objekt typu InvoiceDTO
+     * <p>Used to transform database entities into API-ready DTO objects.</p>
+     *
+     * @param source the {@link InvoiceEntity} to convert
+     * @return the mapped {@link InvoiceDTO}
      */
     @Mapping(target = "seller", source = "seller")
     @Mapping(target = "buyer", source = "buyer")
-
     InvoiceDTO toDTO(InvoiceEntity source);
 
     /**
-     * Aktualizuje existující InvoiceEntity hodnotami z InvoiceDTO.
+     * Updates an existing {@link InvoiceEntity} with values from an {@link InvoiceDTO}.
      *
-     * Používá se, když chceme změnit data entity (např. z databáze)
-     * bez vytváření nového objektu, přímo podle dat z DTO
+     * <p>This method is used when updating entity data (e.g., fetched from the database)
+     * directly with values from a DTO, without creating a new entity instance.</p>
      *
-     * @param source - zdrojový objekt InvoiceDTO s novými daty
-     * @param entity - cílový objekt InvoiceEntity, který bude aktualizován
+     * @param source the source {@link InvoiceDTO} containing updated data
+     * @param entity the target {@link InvoiceEntity} to update
      */
     void updateEntity(InvoiceDTO source, @MappingTarget InvoiceEntity entity);
 }

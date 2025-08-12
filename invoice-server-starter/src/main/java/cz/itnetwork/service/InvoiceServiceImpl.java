@@ -3,11 +3,9 @@ package cz.itnetwork.service;
 import cz.itnetwork.constant.InvoiceRelationType;
 import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.InvoiceStatisticsDTO;
-import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.mapper.InvoiceMapper;
 import cz.itnetwork.entity.InvoiceEntity;
 import cz.itnetwork.entity.PersonEntity;
-import cz.itnetwork.entity.UserEntity;
 import cz.itnetwork.entity.filtration.InvoiceFilter;
 import cz.itnetwork.entity.repository.InvoiceRepository;
 import cz.itnetwork.entity.repository.PersonRepository;
@@ -15,10 +13,8 @@ import cz.itnetwork.entity.repository.specification.InvoiceSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -27,13 +23,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Implementace služby pro správu faktur.
- * *
- * Obsahuje metody pro vytváření, aktualizaci,
- * mazání a získávání informací o fakturách.
+ * Implementation of the InvoiceService interface.
+ * <p>
+ * Provides methods for creating, updating, deleting,
+ * and retrieving invoice information.
  */
 @Service
-public class InvoiceServiceImpl implements  InvoiceService {
+public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     private InvoiceRepository invoiceRepository;
@@ -45,79 +41,64 @@ public class InvoiceServiceImpl implements  InvoiceService {
     private InvoiceMapper invoiceMapper;
 
     /**
-     * Vytvoří novou fakturu na základě dat z InvoiceDTO.
-     * Připraví entitu faktury, uloží ji do databáze a vrátí výslednou DTO reprezentaci.
+     * Creates a new invoice based on the provided InvoiceDTO.
+     * Prepares the invoice entity, saves it to the database,
+     * and returns the resulting DTO representation.
      *
-     * @param invoiceDTO data nové faktury
-     * @return uložená faktura jako InvoiceDTO
+     * @param invoiceDTO data for the new invoice
+     * @return the saved invoice as an InvoiceDTO
      */
     @Override
     public InvoiceDTO createInvoice(InvoiceDTO invoiceDTO) {
         InvoiceEntity invoice = prepareInvoiceEntity(invoiceDTO, null);
-
-        InvoiceEntity save = invoiceRepository.save(invoice);
-        return invoiceMapper.toDTO(save);
+        InvoiceEntity saved = invoiceRepository.save(invoice);
+        return invoiceMapper.toDTO(saved);
     }
 
     /**
-     * Vrátí stránkovaný seznam faktur podle zadaných filtrů.
-     * Používá InvoiceSpecification k aplikaci filtrů a Pageable k stránkování výsledků.
+     * Returns a paginated list of invoices based on the given filters.
+     * Uses InvoiceSpecification to apply filters and Pageable for pagination.
      *
-     * @param invoiceFilter objekt obsahující kritéria pro filtrování faktur
-     * @param pageable informace o stránkování (stránka, velikost, řazení)
-     * @return stránka faktur převedených na InvoiceDTO
+     * @param invoiceFilter criteria for filtering invoices
+     * @param pageable pagination information (page number, size, sorting)
+     * @return a page of invoices converted to InvoiceDTO
      */
     @Override
-<<<<<<< Updated upstream
-    public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable, UserEntity userEntity) {
-        Specification<InvoiceEntity> invoiceSpecification = new InvoiceSpecification(invoiceFilter);
-
-        // If the user is not admin, only their own invoices are returned
-        if(!userEntity.isAdmin()){
-            Specification<InvoiceEntity> userSpec = (root, query, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get("user"), userEntity);
-            invoiceSpecification = invoiceSpecification.and(userSpec);
-        }
-=======
     public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable) {
         Specification<InvoiceEntity> invoiceSpecification = new InvoiceSpecification(invoiceFilter);
-
->>>>>>> Stashed changes
         Page<InvoiceEntity> entityPage = invoiceRepository.findAll(invoiceSpecification, pageable);
         return entityPage.map(invoiceMapper::toDTO);
     }
 
     /**
-     * Vrátí seznam všech nákupů (faktur), kde kupující má zadané identifikační číslo.
-     * Metoda využívá interní pomocnou metodu getInvoiceByIdentificationNumber s parametrem BUYER.
+     * Returns all purchases (invoices) where the buyer has the given identification number.
+     * Uses the internal helper method getInvoiceByIdentificationNumber with the BUYER type.
      *
-     * @param identificationNumber identifikační číslo kupujícího
-     * @return seznam faktur odpovídajících zadanému identifikačnímu číslu kupujícího
+     * @param identificationNumber buyer's identification number
+     * @return list of invoices for the given buyer identification number
      */
     @Override
     public List<InvoiceDTO> getAllPurchasesByIdentificationNumber(String identificationNumber) {
         return getInvoiceByIdentificationNumber(identificationNumber, InvoiceRelationType.BUYER);
-
     }
 
     /**
-     * Vrátí seznam všech prodejů (faktur), kde prodávající má zadané identifikační číslo.
-     * Metoda používá interní pomocnou metodu getInvoiceByIdentificationNumber s parametrem SELLER.
+     * Returns all sales (invoices) where the seller has the given identification number.
+     * Uses the internal helper method getInvoiceByIdentificationNumber with the SELLER type.
      *
-     * @param identificationNumber identifikační číslo prodávajícího
-     * @return seznam faktur odpovídajících zadanému identifikačnímu číslu prodávajícího
+     * @param identificationNumber seller's identification number
+     * @return list of invoices for the given seller identification number
      */
     @Override
     public List<InvoiceDTO> getAllSalesByIdentificationNumber(String identificationNumber) {
         return getInvoiceByIdentificationNumber(identificationNumber, InvoiceRelationType.SELLER);
     }
 
-
     /**
-     * Najde fakturu podle jejího ID a převede ji na DTO.
+     * Finds an invoice by its ID and converts it to a DTO.
      *
-     * @param id identifikátor faktury
-     * @return faktura jako InvoiceDTO
+     * @param id the invoice ID
+     * @return the invoice as an InvoiceDTO
      */
     @Override
     public InvoiceDTO getInvoice(Long id) {
@@ -126,12 +107,12 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
-     * Aktualizuje existující fakturu podle zadaného ID a nových dat.
-     * Nejprve ověří, že faktura s daným ID existuje, poté připraví a uloží aktualizovanou entitu.
+     * Updates an existing invoice based on the provided ID and new data.
+     * First ensures the invoice exists, then prepares and saves the updated entity.
      *
-     * @param id identifikátor faktury, kterou chceme aktualizovat
-     * @param invoiceDTO nová data faktury
-     * @return aktualizovaná faktura jako InvoiceDTO
+     * @param id the ID of the invoice to update
+     * @param invoiceDTO the new invoice data
+     * @return the updated invoice as an InvoiceDTO
      */
     @Override
     public InvoiceDTO updateInvoice(Long id, InvoiceDTO invoiceDTO) {
@@ -142,10 +123,10 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
-     * Odstraní fakturu podle zadaného ID.
-     * Nejprve ověří, že faktura existuje, pak ji smaže z databáze.
+     * Deletes an invoice by its ID.
+     * First ensures the invoice exists, then removes it from the database.
      *
-     * @param id identifikátor faktury, kterou chceme odstranit
+     * @param id the ID of the invoice to delete
      */
     @Override
     public void remove(Long id) {
@@ -154,11 +135,14 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
-     * Získá statistiky faktur zahrnující součet cen za aktuální rok,
-     * celkový součet cen za celou dobu a počet všech faktur.
-     * Pokud nejsou k dispozici žádné hodnoty, použije místo nich nulu.
+     * Retrieves invoice statistics including:
+     * - total price for the current year,
+     * - total price for all time,
+     * - total number of invoices.
+     * <p>
+     * If any values are null, they are replaced with zero.
      *
-     * @return objekt InvoiceStatisticsDTO obsahující tyto statistiky
+     * @return InvoiceStatisticsDTO containing these statistics
      */
     @Override
     public InvoiceStatisticsDTO getStatistics() {
@@ -173,37 +157,37 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
-     * Načte fakturu podle jejího ID pomocí repository.
-     * Pokud faktura neexistuje, hodí výjimku NotFoundException s vhodnou zprávou.
+     * Loads an invoice by its ID using the repository.
+     * If the invoice does not exist, throws a NotFoundException.
      *
-     * @param id identifikátor faktury
-     * @return nalezená entita faktury
-     * @throws NotFoundException pokud faktura s daným ID neexistuje
+     * @param id the invoice ID
+     * @return the found invoice entity
+     * @throws NotFoundException if no invoice with the given ID exists
      */
-    private InvoiceEntity fetchedInvoiceById(long id){
-        try{
+    private InvoiceEntity fetchedInvoiceById(long id) {
+        try {
             return invoiceRepository.getReferenceById(id);
-        }catch (EntityNotFoundException e){
-            throw new NotFoundException("Faktura s ID " + id + " neexistuje.");
+        } catch (EntityNotFoundException e) {
+            throw new NotFoundException("Invoice with ID " + id + " does not exist.");
         }
     }
 
     /**
-     * Připraví entitu faktury pro uložení do databáze na základě předané DTO.
+     * Prepares an invoice entity for saving to the database based on the provided DTO.
+     * <p>
+     * - Converts the DTO to an entity.
+     * - Loads and sets references to the seller and buyer from the database.
+     * - If an ID is provided, sets it on the entity (used for updates).
      *
-     * - Převádí DTO na entitu.
-     * - Načte a nastaví reference na prodávajícího a kupujícího z databáze.
-     * - Pokud je zadáno ID, nastaví ho do entity (pro update).
-     *
-     * @param invoiceDTO data faktury ve formě DTO
-     * @param id volitelné ID faktury (používá se při aktualizaci)
-     * @return připravená InvoiceEntity připravená k uložení
+     * @param invoiceDTO the invoice data in DTO form
+     * @param id optional invoice ID (used for updates)
+     * @return a prepared InvoiceEntity ready for saving
      */
-    private InvoiceEntity prepareInvoiceEntity(InvoiceDTO invoiceDTO, Long id){
+    private InvoiceEntity prepareInvoiceEntity(InvoiceDTO invoiceDTO, Long id) {
         InvoiceEntity invoice = invoiceMapper.toEntity(invoiceDTO);
 
         PersonEntity seller = getPersonById(invoice.getSeller().getId());
-        PersonEntity buyer = getPersonById((invoice.getBuyer().getId()));
+        PersonEntity buyer = getPersonById(invoice.getBuyer().getId());
 
         invoice.setSeller(seller);
         invoice.setBuyer(buyer);
@@ -216,24 +200,26 @@ public class InvoiceServiceImpl implements  InvoiceService {
     }
 
     /**
-     * Vrátí seznam faktur spojených s osobou podle jejího identifikačního čísla a typu vztahu (kupující nebo prodávající).
-     * Nejprve ověří, zda osoba s daným identifikačním číslem existuje.
-     * Podle typu vztahu načte faktury, kde je osoba buď kupujícím, nebo prodávajícím.
-     * Výsledek převede na seznam DTO.
+     * Returns a list of invoices associated with a person by their identification number
+     * and the specified relation type (buyer or seller).
+     * <p>
+     * First ensures that the person with the given identification number exists.
+     * Then retrieves invoices where the person is either the buyer or the seller.
+     * The result is converted to DTO form.
      *
-     * @param identificationNumber identifikační číslo osoby
-     * @param type typ vztahu k fakturám (BUYER nebo SELLER)
-     * @return seznam faktur jako InvoiceDTO
-     * @throws NotFoundException pokud osoba s daným identifikačním číslem neexistuje
+     * @param identificationNumber the person's identification number
+     * @param type the relation type to the invoice (BUYER or SELLER)
+     * @return list of invoices as InvoiceDTO
+     * @throws NotFoundException if no person with the given identification number exists
      */
-    private List<InvoiceDTO> getInvoiceByIdentificationNumber(String identificationNumber, InvoiceRelationType type){
+    private List<InvoiceDTO> getInvoiceByIdentificationNumber(String identificationNumber, InvoiceRelationType type) {
         personRepository.findByIdentificationNumber(identificationNumber)
-                .orElseThrow(()-> new NotFoundException("Person with identification number" + identificationNumber + " wasn't found. "));
+                .orElseThrow(() -> new NotFoundException("Person with identification number " + identificationNumber + " was not found."));
 
         List<InvoiceEntity> invoiceEntities;
-        if(type == InvoiceRelationType.BUYER){
+        if (type == InvoiceRelationType.BUYER) {
             invoiceEntities = invoiceRepository.findByBuyerIdentificationNumber(identificationNumber);
-        }else {
+        } else {
             invoiceEntities = invoiceRepository.findBySellerIdentificationNumber(identificationNumber);
         }
         return invoiceEntities.stream()
@@ -241,19 +227,13 @@ public class InvoiceServiceImpl implements  InvoiceService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Loads a person entity by its ID.
+     *
+     * @param id the person's ID
+     * @return the found person entity
+     */
     private PersonEntity getPersonById(Long id) {
         return personRepository.getReferenceById(id);
     }
-<<<<<<< Updated upstream
-=======
-
-
-
-
-
-
-
-
-
->>>>>>> Stashed changes
 }

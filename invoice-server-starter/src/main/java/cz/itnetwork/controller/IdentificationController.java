@@ -11,45 +11,45 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Kontroler pro práci s fakturami podle identifikačního čísla (IČO)
- * Poskytuje koncové body pro získání faktur prodejce a nakupíjícího subjektu
+ * REST controller for working with invoices based on the identification number (IČO).
  *
- * Cesta je vedená jako /api/identification/{identificationNumber},
- * kde {identificationNumber} je unikátní identifikátor osoby (IČO)
+ * <p>Provides endpoints for retrieving a list of invoices where the entity is:
+ * <ul>
+ *     <li><b>seller</b> – endpoint {@code /sales}</li>
+ *     <li><b>buyer</b> – endpoint {@code /purchases}</li>
+ * </ul>
+ *
+ * <p>The base path is:
+ * {@code /api/identification/{identificationNumber}}, where
+ * {@code identificationNumber} is a unique identifier of a person or company (IČO).</p>
  */
 @RestController
 @RequestMapping("/api/identification/{identificationNumber}")
 public class IdentificationController {
 
-    /**
-     * Injektuje (vkládá) instanci služby InvoiceService.
-     * *
-     * Díky anotaci @Autowired zajistí Spring, že zde bude
-     * dostupný správný objekt InvoiceService, který se používá
-     * pro práci s fakturami.
-     */
+    /** Service for handling invoice operations. */
     @Autowired
     private InvoiceService invoiceService;
 
     /**
-     * Vrací seznam všech faktur kde je osoba (firma) jako prodejce podle identifikačního čísla (IČO)
-     * @param identificationNumber - identifikační číslo osoby (IČO), podle které se faktury vyhledávají
-     * @return seznam faktur typu "sales" odpovídající zadanému IČO
+     * Returns all invoices where the specified entity is listed as the seller.
+     *
+     * @param identificationNumber the identification number (IČO) of the seller
+     * @return a list of invoices where the entity is the seller
      */
-    @GetMapping({"/sales/", "sales"})
-    public List<InvoiceDTO> getAllSalesByIdentificationNumber(@PathVariable String identificationNumber){
+    @GetMapping({"/sales", "/sales/"})
+    public List<InvoiceDTO> getAllSalesByIdentificationNumber(@PathVariable String identificationNumber) {
         return invoiceService.getAllSalesByIdentificationNumber(identificationNumber);
     }
 
     /**
-     * Vrací seznam všech faktur kde je osoba (firma) jako nakupující podle identifikačního čísla (IČO)
-     * @param identificationNumber - identifikační číslo osoby (IČO), podle které se faktury vyhledávají
-     * @return seznam faktur typu "purchases" odpovídající zadanému IČO
+     * Returns all invoices where the specified entity is listed as the buyer.
+     *
+     * @param identificationNumber the identification number (IČO) of the buyer
+     * @return a list of invoices where the entity is the buyer
      */
-    @GetMapping({"/purchases/", "/purchases"})
-    public List<InvoiceDTO> getAllPurchasesIdentificationNumber(@PathVariable String identificationNumber){
+    @GetMapping({"/purchases", "/purchases/"})
+    public List<InvoiceDTO> getAllPurchasesIdentificationNumber(@PathVariable String identificationNumber) {
         return invoiceService.getAllPurchasesByIdentificationNumber(identificationNumber);
     }
-
-
 }

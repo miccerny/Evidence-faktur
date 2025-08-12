@@ -8,44 +8,43 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 /**
- * Mapper pro převod mezi PersonEntity a PersonDTO
- * *
- * Používá knihovnu Mapstructur pro automatické generování
+ * Mapper for converting between {@link PersonEntity} and {@link PersonDTO}.
+ *
+ * <p>Uses the MapStruct library to automatically generate mapping implementations
+ * for transforming data between the persistence layer (entities) and the API layer (DTOs).</p>
  */
 @Mapper(componentModel = "spring")
 public interface PersonMapper {
 
     /**
-     * Převede objekt PersonDTO na PersonEntity.
-     * *
-     * Slouží k transformaci dat z formátu používaného ve vrstvě API(DTO)
-     * do formátu vhodného pro uložení do databáze (Entity)
+     * Converts a {@link PersonDTO} to a {@link PersonEntity}.
      *
-     * @param source - vstupní objekt typu PersonDTO
-     * @return - převedený objekt typu PersonEntity
+     * <p>Used to transform API-layer objects (DTO) into a database-ready
+     * persistence model (Entity).</p>
+     *
+     * @param source the {@link PersonDTO} to convert
+     * @return the mapped {@link PersonEntity}
      */
     PersonEntity toEntity(PersonDTO source);
 
     /**
-     * Převede objekt PersonEntity na PersonDTO.
-     * *
-     * Slouží k transformaci dat z databázové entity
-     * do formátu vhodného pro přenos přes API (DTO).
+     * Converts a {@link PersonEntity} to a {@link PersonDTO}.
      *
-     * @param source vstupní objekt typu PersonEntity
-     * @return převedený objekt typu PersonDTO
+     * <p>Used to transform database entities into API-ready DTO objects.</p>
+     *
+     * @param source the {@link PersonEntity} to convert
+     * @return the mapped {@link PersonDTO}
      */
-
     PersonDTO toDTO(PersonEntity source);
 
     /**
-     * Aktualizuje existující InvoiceEntity hodnotami z PersonDTO.
-     * *
-     * Používá se, když chceme změnit data entity (např. z databáze)
-     * bez vytváření nového objektu, přímo podle dat z DTO
+     * Updates an existing {@link PersonEntity} with values from a {@link PersonDTO}.
      *
-     * @param source - zdrojový objekt PersonDTO s novými daty
-     * @param person - cílový objekt PersonEntity, který bude aktualizován
+     * <p>This method is used when updating entity data (e.g., fetched from the database)
+     * directly with values from a DTO, without creating a new entity instance.</p>
+     *
+     * @param source the source {@link PersonDTO} containing updated data
+     * @param person the target {@link PersonEntity} to update
      */
     void updateEntity(PersonDTO source, @MappingTarget PersonEntity person);
 }
