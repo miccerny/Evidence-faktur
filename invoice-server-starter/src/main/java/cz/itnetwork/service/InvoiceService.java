@@ -34,7 +34,7 @@ public interface InvoiceService {
      * @param userEntity the user requesting the invoices
      * @return a page of invoices matching the filters
      */
-    Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable, UserEntity userEntity);
+    Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable);
 
     /**
      * Finds an invoice by its ID.

@@ -3,7 +3,6 @@ package cz.itnetwork.service;
 import cz.itnetwork.constant.InvoiceRelationType;
 import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.InvoiceStatisticsDTO;
-import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.mapper.InvoiceMapper;
 import cz.itnetwork.entity.InvoiceEntity;
 import cz.itnetwork.entity.PersonEntity;
@@ -11,18 +10,24 @@ import cz.itnetwork.entity.UserEntity;
 import cz.itnetwork.entity.filtration.InvoiceFilter;
 import cz.itnetwork.entity.repository.InvoiceRepository;
 import cz.itnetwork.entity.repository.PersonRepository;
+import cz.itnetwork.entity.repository.UserRepository;
 import cz.itnetwork.entity.repository.specification.InvoiceSpecification;
+import cz.itnetwork.exceptions.EmailNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.mapstruct.control.MappingControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.math.BigDecimal;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +48,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Autowired
     private InvoiceMapper invoiceMapper;
+
+    private UserRepository userRepository;
+
 
     /**
      * Creates a new invoice based on data from InvoiceDTO.
@@ -69,14 +77,16 @@ public class InvoiceServiceImpl implements InvoiceService {
      * @return a page of invoices converted to InvoiceDTO
      */
     @Override
-    public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable, UserEntity userEntity) {
-        Specification<InvoiceEntity> invoiceSpecification = new InvoiceSpecification(invoiceFilter);
+    public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity user = resolveCurrentUser(authentication);
 
-        // If the user is not admin, only their own invoices are returned
-        if(!userEntity.isAdmin()){
-            Specification<InvoiceEntity> userSpec = (root, query, criteriaBuilder) ->
-                    criteriaBuilder.equal(root.get("user"), userEntity);
-            invoiceSpecification = invoiceSpecification.and(userSpec);
+        Specification<InvoiceEntity> invoiceSpecification = Specification.where(new InvoiceSpecification(invoiceFilter));
+
+        if(!user.isAdmin()){
+            invoiceSpecification = invoiceSpecification.and(((root, query, criteriaBuilder) -> {query.distinct(true);
+            return criteriaBuilder.equal(root.join("seller").get("owner"), user);
+            }));
         }
         Page<InvoiceEntity> entityPage = invoiceRepository.findAll(invoiceSpecification, pageable);
         return entityPage.map(invoiceMapper::toDTO);
@@ -165,6 +175,12 @@ public class InvoiceServiceImpl implements InvoiceService {
         return new InvoiceStatisticsDTO(currentSum, allSum, count);
     }
 
+    private void assertOwnerOrAdmin(UserEntity currentUser, InvoiceEntity invoice) {
+        if (!currentUser.isAdmin() && !(invoice.getSeller().getOwner().getUserId() == currentUser.getUserId())) {
+            throw new org.springframework.security.access.AccessDeniedException("Nemáte oprávnění");
+        }
+    }
+
     /**
      * Loads an invoice by its ID using the repository.
      * If the invoice does not exist, throws NotFoundException with an appropriate message.
@@ -237,5 +253,26 @@ public class InvoiceServiceImpl implements InvoiceService {
     // Loads a person by their ID using the repository.
     private PersonEntity getPersonById(Long id) {
         return personRepository.getReferenceById(id);
+    }
+
+    private UserEntity resolveCurrentUser(Authentication auth){
+        Object principal = auth.getPrincipal();
+
+        if(principal instanceof UserEntity){
+            return (UserEntity) principal;
+        }
+        if(principal instanceof UserDetails){
+            String email = ((UserDetails) principal).getUsername();
+            return userRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("Uživatel nenalezen"));
+        }
+
+        if(principal instanceof String){
+            String email = (String) principal;
+            return userRepository.findByEmail(email)
+                    .orElseThrow(() -> new EmailNotFoundException("Uživatel nenalezen"));
+        }
+
+        throw new AccessDeniedException("Nelze určit přihlášeného uživatele.");
     }
 }

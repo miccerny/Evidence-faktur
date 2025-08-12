@@ -2,6 +2,7 @@ package cz.itnetwork.dto.mapper;
 
 import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.entity.PersonEntity;
+import cz.itnetwork.entity.UserEntity;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +49,7 @@ public class PersonMapperImpl implements PersonMapper {
 
         PersonDTO personDTO = new PersonDTO();
 
+        personDTO.setOwnerEmail( sourceOwnerEmail( source ) );
         personDTO.setId( source.getId() );
         personDTO.setName( source.getName() );
         personDTO.setIdentificationNumber( source.getIdentificationNumber() );
@@ -88,5 +90,20 @@ public class PersonMapperImpl implements PersonMapper {
         person.setCity( source.getCity() );
         person.setCountry( source.getCountry() );
         person.setNote( source.getNote() );
+    }
+
+    private String sourceOwnerEmail(PersonEntity personEntity) {
+        if ( personEntity == null ) {
+            return null;
+        }
+        UserEntity owner = personEntity.getOwner();
+        if ( owner == null ) {
+            return null;
+        }
+        String email = owner.getEmail();
+        if ( email == null ) {
+            return null;
+        }
+        return email;
     }
 }

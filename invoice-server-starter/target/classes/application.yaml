@@ -20,3 +20,9 @@ spring:
   jackson:
     mapper:
       accept-case-insensitive-enums: true
+
+logging:
+  level:
+    org:
+      springframework:
+        security=DEBUG:

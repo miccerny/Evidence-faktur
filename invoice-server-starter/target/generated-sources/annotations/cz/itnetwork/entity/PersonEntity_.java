@@ -11,6 +11,7 @@ import javax.annotation.processing.Generated;
 public abstract class PersonEntity_ {
 
 	public static volatile SingularAttribute<PersonEntity, String> zip;
+	public static volatile SingularAttribute<PersonEntity, UserEntity> owner;
 	public static volatile SingularAttribute<PersonEntity, String> bankCode;
 	public static volatile SingularAttribute<PersonEntity, Countries> country;
 	public static volatile SingularAttribute<PersonEntity, String> note;
@@ -29,6 +30,7 @@ public abstract class PersonEntity_ {
 	public static volatile SingularAttribute<PersonEntity, Long> id;
 
 	public static final String ZIP = "zip";
+	public static final String OWNER = "owner";
 	public static final String BANK_CODE = "bankCode";
 	public static final String COUNTRY = "country";
 	public static final String NOTE = "note";

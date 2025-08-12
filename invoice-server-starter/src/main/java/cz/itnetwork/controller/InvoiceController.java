@@ -55,9 +55,10 @@ public class InvoiceController {
      * @param pageable - pagination parameters (page size, page number, sorting)
      * @return a paged list of invoices matching the given filters
      */
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping({"", "/"})
-    public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, @PageableDefault(size = 5) Pageable pageable, UserEntity userEntity){
-        return invoiceService.getAll(invoiceFilter, pageable, userEntity);
+    public Page<InvoiceDTO> getAll(InvoiceFilter invoiceFilter, @PageableDefault(size = 5) Pageable pageable){
+        return invoiceService.getAll(invoiceFilter, pageable);
     }
 
     /**
