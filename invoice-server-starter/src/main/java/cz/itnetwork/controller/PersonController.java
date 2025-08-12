@@ -3,6 +3,7 @@ package cz.itnetwork.controller;
 
 import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.PersonStatisticDTO;
+import cz.itnetwork.entity.UserEntity;
 import cz.itnetwork.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,56 +11,60 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 /**
- * Controller that provides an API for working with persons (people/entities).
+ * Controller, který poskytuje API pro práci s s osobami.
  *
- * All requests related to persons start with "/api/persons".
- * This controller handles operations such as retrieving, creating, updating,
- * deleting persons, and also provides statistics.
+ * Všechny požadavky na osoby začínají požadavkem "/api/persons".
+ * Tento controller zpracovává operace jako získání, vytvoření, úpravu,
+ * smazání osob a také získání statistik.
  */
 @RestController
 @RequestMapping("/api/persons")
 public class PersonController {
 
     /**
-     * Injects an instance of PersonService.
-     * <p>
-     * Thanks to the @Autowired annotation, Spring ensures that
-     * the correct PersonService object is available here, which is used
-     * for working with persons.
+     * Injektuje (vkládá) instanci služby PersonService.
+     * *
+     * Díky anotaci @Autowired zajistí Spring, že zde bude
+     * dostupný správný objekt PersonService, který se používá
+     * pro práci s osobami.
      */
     @Autowired
     private PersonService personService;
 
     /**
-     * Adds a new person to the system.
+     * Přidá novou osobu do systému
      *
-     * @param personDTO - an object containing information about the person to add
-     * @return - the newly created person as a DTO
+     * @param personDTO - objekt obsahující informace o osobě, kterou chceme přidat
+     * @return - nově vytvořená osoba jako DTO
      */
     @PostMapping("")
     public PersonDTO addPerson(@RequestBody PersonDTO personDTO) {
-        return personService.addPerson(personDTO);
+
+        return  personService.addPerson(personDTO);
     }
 
     /**
-     * Returns a paginated list of persons.
+     *  Vrací stránkovaný seznam osob
      *
-     * @param pageable - pagination parameters (page size, page number)
-     * @return - a page containing a list of persons as DTOs
+     * @param pageable - - parametry stránkování (velikost stránky, číslo stárnky)
+     * @return - stránka obsahující seznam osob jako DTO
      */
     @GetMapping("")
     public Page<PersonDTO> getPersons(@PageableDefault(size = 1000) Pageable pageable) {
+
         return personService.getAll(pageable);
     }
 
     /**
-     * Deletes a person by their ID.
+     * Odstraní osobu podle jejího ID
      *
-     * @param personId - the ID of the person to delete
+     * @param personId - ID soby, kterou chceme smazat
      */
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/{personId}")
@@ -69,10 +74,10 @@ public class PersonController {
     }
 
     /**
-     * Returns the details of a specific person by their unique ID.
+     * Vrací detail konkrétní osoby dle unikátního ID.
      *
-     * @param personId - the ID of the person to retrieve
-     * @return - the person as a DTO
+     * @param personId - ID osoby, kterou chceme získat
+     * @return - osoba jako DTO
      */
     @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/{personId}")
@@ -81,11 +86,11 @@ public class PersonController {
     }
 
     /**
-     * Updates the details of an existing person by their ID.
+     * Aktualizuje údaje o existující osobě podle jejího ID.
      *
-     * @param personId - the ID of the person to update
-     * @param personDTO - object containing new information about the person
-     * @return - the updated person as a DTO
+     * @param personId - ID osoby, kterou chceme upravit
+     * @param personDTO - objekt obsahující nové inforamce o osobě
+     * @return - aktualizovaná osoba jako DTO
      */
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping("/{personId}")
@@ -94,13 +99,14 @@ public class PersonController {
     }
 
     /**
-     * Returns statistics related to all persons.
+     * Vrací statistiky týkající se všech osob.
      *
-     * @return - a list of objects with information about the statistics
+     * @return - seznam objektů s informacemi o statistikách
      */
     @GetMapping({"/statistics/","/statistics"})
     public List<PersonStatisticDTO> getPersonStatistics(){
         return personService.getPersonStatistic();
     }
+
 }
 

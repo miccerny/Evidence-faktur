@@ -1,6 +1,10 @@
 package cz.itnetwork.entity.repository;
 
 import cz.itnetwork.entity.InvoiceEntity;
+<<<<<<< Updated upstream
+=======
+import cz.itnetwork.entity.UserEntity;
+>>>>>>> Stashed changes
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,44 +20,45 @@ import java.util.List;
 public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long>, JpaSpecificationExecutor<InvoiceEntity> {
 
     /**
-     * Finds all invoices according to the given specification and returns the results as a paged list.
+     * Vyhledá všechny faktury podle zadané specifikace a vrátí výsledky stránkovaně.
      *
-     * @param specification the filter specifying the search conditions
-     * @param pageable pagination and sorting information
-     * @return a page of invoices matching the specification
+     * @param specification filtr specifikující podmínky vyhledávání
+     * @param pageable informace o stránkování a řazení
+     * @return stránka faktur vyhovujících specifikaci
      */
     Page<InvoiceEntity> findAll(Specification<InvoiceEntity> specification, Pageable pageable);
 
     /**
-     * Finds all invoices where the seller has the given identification number.
+     * Najde všechny faktury, kde prodávající má dané identifikační číslo.
      *
-     * @param identificationNumber the identification number (IČO) of the seller
-     * @return a list of invoices matching the given seller identification number
+     * @param identificationNUmber - identifikační číslo prodávajícího (IČO)
+     * @return seznam faktur odpovídajících zadanému identifikačnímu číslu prodávajícího
      */
-    List<InvoiceEntity> findBySellerIdentificationNumber(String identificationNumber);
+    List<InvoiceEntity> findBySellerIdentificationNumber(String identificationNUmber);
 
     /**
-     * Finds all invoices where the buyer has the given identification number.
+     * Najde všechny faktury, kde kupující má zadané identifikační číslo.
      *
-     * @param identificationNumber the identification number (IČO) of the buyer
-     * @return a list of invoices matching the given buyer identification number
+     * @param identificationNumber identifikační číslo kupujícího (IČO)
+     * @return seznam faktur odpovídajících zadanému identifikačnímu číslu kupujícího
      */
     List<InvoiceEntity> findByBuyerIdentificationNumber(String identificationNumber);
 
     /**
-     * Calculates the sum of prices of all invoices that were issued in the current year.
+     * Spočítá součet cen všech faktur, které byly vystaveny v aktuálním roce.
      *
-     * @return the total sum of invoice prices for the current year as BigDecimal
+     * @return celková suma cen faktur za aktuální rok jako BigDecimal
      */
     @Query(value = "SELECT SUM(price) FROM invoice WHERE EXTRACT(YEAR FROM issued) = EXTRACT(YEAR FROM CURRENT_DATE)", nativeQuery = true)
     BigDecimal sumPricesForCurrentYear();
 
     /**
-     * Calculates the total sum of all invoice prices of all time.
+     * Spočítá celkový součet cen všech faktur za celou dobu.
      *
-     * @return the total sum of all invoices as BigDecimal
+     * @return celková suma všech faktur jako BigDecimal
      */
     @Query(value = "SELECT SUM(price) FROM invoice", nativeQuery = true)
     BigDecimal allTimeSum();
+
 
 }

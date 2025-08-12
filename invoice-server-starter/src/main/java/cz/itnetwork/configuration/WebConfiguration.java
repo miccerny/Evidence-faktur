@@ -6,22 +6,22 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Configuration class for setting up the web layer of the application.
- * <p>
- * Activates and customizes Spring MVC configuration
- * using the {@link WebMvcConfigurer} interface implementation.
+ * Konfigurační třída pro nastavení webové vrstvy aplikace.
+ * *
+ * Aktivuje a přizpůsobuje konfiguraci Spring MVC
+ * pomocí implementace rozhraní {@link WebMvcConfigurer}.
  */
 @Configuration
 @EnableWebMvc
 public class WebConfiguration implements WebMvcConfigurer {
 
     /**
-     * Configures CORS (Cross-Origin Resource Sharing) rules for the application.
-     * <p>
-     * Allows access from all origins (specified in .allowedOrigins)
-     * for all URL paths. Sets allowed HTTP methods and enables sending cookies.
+     * Konfiguruje pravidla CORS (Cross-Origin Resource Sharing) pro aplikaci.
+     * *
+     * Povolení přístupu ze všech zdrojů (origin) pro všechny URL cesty.
+     * Nastavuje povolené HTTP metody a umožňuje zasílání cookies.
      *
-     * @param registry the CORS registry to configure rules
+     * @param registry registr CORS pravidel
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {

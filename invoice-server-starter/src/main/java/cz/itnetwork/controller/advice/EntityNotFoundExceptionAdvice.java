@@ -10,25 +10,25 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.webjars.NotFoundException;
 
 /**
- * Global exception handler class for the entire application.
- * <p>
- * Thanks to the @ControllerAdvice annotation, the exception-handling methods
- * defined here are automatically applied to all controllers.
- * <p>
- * This class is intended to catch and handle exceptions
- * such as EntityNotFoundException or similar ones.
+ * Globální třída pro zpracování výjimek v rámci celé aplikace.
+ * *
+ * Díky anotaci @ControllerAdvice se zde definované metody
+ * pro zpracování výjimek automaticky aplikují na všechny controllery.
+ * *
+ * Tato třída je určena k zachytávání a vhodnému zpracování
+ * výjimek typu EntityNotFoundException nebo podobných.
  */
 @ControllerAdvice
 public class EntityNotFoundExceptionAdvice {
 
     /**
-     * Handles exceptions of type NotFoundException and EntityNotFoundException.
-     * <p>
-     * When any of these exceptions occur, it returns an HTTP response
-     * with status code 404 (Not Found) and a body containing error information.
+     * Zpracovává výjimky typu NotFoundException a EntityNotFoundException.
+     * *
+     * Když dojde k některé z těchto výjimek, vrátí HTTP odpověď
+     * s kódem 404 (Not Found) a tělem obsahujícím informace o chybě.
      *
-     * @param e the caught exception
-     * @return ResponseEntity with an ApiError object and HTTP status 404
+     * @param e zachycená výjimka
+     * @return ResponseEntity s objektem ApiError a HTTP stavem 404
      */
     @ExceptionHandler({NotFoundException.class, EntityNotFoundException.class})
     public ResponseEntity<ApiError> handleEntityNotFoundException(RuntimeException e) {

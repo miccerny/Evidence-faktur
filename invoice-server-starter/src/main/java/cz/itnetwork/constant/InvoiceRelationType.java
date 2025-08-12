@@ -1,12 +1,11 @@
 package cz.itnetwork.constant;
 
 /**
- * Enumeration defining the type of relationship between an invoice and a person.
- * <p>
- * BUYER  - the person is the buyer on the invoice,
- * SELLER - the person is the seller on the invoice.
+ * Výčet definující typ vztahu faktury k osobě.
+ * *
+ * BUYER  - osoba je kupujícím na faktuře,
+ * SELLER - osoba je prodávajícím na faktuře.
  */
-
 public enum InvoiceRelationType {
     BUYER, SELLER
 }

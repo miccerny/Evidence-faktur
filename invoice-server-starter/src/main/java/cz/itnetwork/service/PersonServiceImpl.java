@@ -7,13 +7,11 @@ import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.UserEntity;
 import cz.itnetwork.entity.repository.PersonRepository;
 import cz.itnetwork.entity.repository.UserRepository;
-import cz.itnetwork.exceptions.EmailNotFoundException;
 import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -27,10 +25,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Implementation of the service for working with the Person entity.
- * <p>
- * Contains logic for adding, updating, deleting,
- * and retrieving information about persons.
+ * Implementace služby pro práci s entitou Person.
+ * *
+ * Obsahuje logiku pro přidávání, aktualizaci, odstranění
+ * a získávání informací o osobách.
  */
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -45,22 +43,22 @@ public class PersonServiceImpl implements PersonService {
     private UserRepository userRepository;
 
     /**
-     * Adds a new person to the system.
-     * <p>
-     * First converts the input DTO to an entity and saves it to the database.
-     * The result is then converted back to a DTO and returned.
+     * Přidá novou osobu do systému.
+     * *
+     *  Nejprve převede vstupní DTO na entitu, kterou uloží do databáze.
+     *  Výsledek následně převede zpět na DTO a vrátí.
      *
-     * @param personDTO - object with person data
-     * @return - saved person as a DTO
+     * @param personDTO - objekt s údaji o osobě
+     * @return - uložená osoba ve formě DTO
      */
     @Override
     public PersonDTO addPerson(PersonDTO personDTO) {
-        if (personRepository.existsByIdentificationNumber(personDTO.getIdentificationNumber())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A company with this identification number already exists");
+        if(personRepository.existsByIdentificationNumber(personDTO.getIdentificationNumber())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Firma s tímto IČO již existuje");
         }
 
         if (personDTO.getIdentificationNumber() == null || personDTO.getIdentificationNumber().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Identification number must not be empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IČO nesmí být prázdné");
         }
         PersonEntity entity = personMapper.toEntity(personDTO);
         entity = personRepository.save(entity);
@@ -69,13 +67,13 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Hides a person with the given ID (soft delete).
-     * <p>
-     * Looks up the person by ID and sets the `hidden` flag to true,
-     * which marks it as hidden instead of deleting it from the database.
-     * If the person does not exist, the method ignores the error.
+     * Skryje osobu se zadaným ID (soft delete).
+     * *
+     *  Vyhledá osobu podle ID a nastaví příznak `hidden` na true,
+     *  čímž se označí jako skrytá místo fyzického smazání z databáze.
+     *  Pokud osoba neexistuje, metoda chybu ignoruje.
      *
-     * @param personId - ID of the person to hide
+     * @param personId - ID osoby, která má být skryta
      */
     @Override
     public void removePerson(long personId) {
@@ -84,19 +82,19 @@ public class PersonServiceImpl implements PersonService {
             person.setHidden(true);
 
             personRepository.save(person);
-        } catch (NotFoundException ignored) {
+        } catch (NotFoundException ignored){
 
         }
     }
 
     /**
-     * Returns a paged list of all non-hidden (active) persons.
-     * <p>
-     * Loads only records that are not marked as hidden (`hidden = false`)
-     * and converts them to DTO objects.
+     * Vrátí stránkovaný seznam všech nezakrytých (aktivních) osob.
+     * *
+     * Načítá pouze záznamy, které nejsou označeny jako skryté (`hidden = false`),
+     * a převádí je na DTO objekty.
      *
-     * @param pageable - paging information (page number, size, sorting)
-     * @return - a page of person DTO objects
+     * @param pageable - informace o stránkování (číslo stránky, velikost, řazení)
+     * @return - stránka s DTO objekty osob
      */
     @Override
     public Page<PersonDTO> getAll(Pageable pageable) {
@@ -105,7 +103,7 @@ public class PersonServiceImpl implements PersonService {
         System.out.println("Authentication: " + authentication);
         System.out.println("Principal class: " + authentication.getPrincipal().getClass());
         System.out.println("Principal: " + authentication.getPrincipal());
-        // 🔓 If the user is not logged in, return all public companies
+        // 🔓 Nepřihlášený uživatel → vrátíme všechny veřejné firmy
         if (authentication == null || !authentication.isAuthenticated() ||
                 authentication.getPrincipal().equals("anonymousUser")) {
             return personRepository.findByHidden(false, pageable)
@@ -119,67 +117,54 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Returns details of a person by their ID.
-     * <p>
-     * Loads the person entity using the given ID and converts it to a DTO.
-     * If the person does not exist, the method throws an exception.
+     * Vrátí detail osoby podle jejího ID.
+     * *
+     * Načte entitu osoby pomocí zadaného ID a převede ji na DTO.
+     * Pokud osoba neexistuje, metoda vyvolá výjimku.
      *
-     * @param personId - ID of the person to find
-     * @return - DTO with person data
-     * @throws NotFoundException - if the person with the given ID does not exist
+     * @param personId -  ID hledané osoby
+     * @return -  DTO s údaji o osobě
+     * @throws NotFoundException - pokud osoba s daným ID neexistuje
      */
     @Override
     public PersonDTO getPerson(Long personId) {
-
         PersonEntity entity = fetchPersonById(personId);
         return personMapper.toDTO(entity);
     }
 
     /**
-     * Updates a person by their ID.
-     * <p>
-     * First marks the original record as hidden (`hidden = true`) to keep data history.
-     * Then creates a new entity from the provided DTO (with a new ID) and saves it as a new record.
+     * Aktualizuje osobu podle ID.
+     * *
+     * Nejprve označí původní záznam jako skrytý (hidden = true),
+     * čímž zachová historii dat. Poté vytvoří novou entitu na základě
+     * poskytnutého DTO (s novým ID) a uloží ji jako nový záznam.
      *
-     * @param personId - ID of the person to update
-     * @param personDTO - new person data
-     * @return - DTO of the newly saved person
+     * @param personId - ID osoby, která se má aktualizovat
+     * @param personDTO - nové údaje osoby
+     * @return - DTO nově uložené osoby
      */
     @Override
-    public PersonDTO updatePerson(Long personId, PersonDTO personDTO) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        UserEntity user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new EmailNotFoundException("User not found"));
-
+    public PersonDTO updatePerson(Long personId, PersonDTO personDTO){
         PersonEntity entity = fetchPersonById(personId);
-        // Only admins or the owner can update the person
-        if (!user.isAdmin() && entity.getOwner().getUserId() != user.getUserId()) {
-            throw new AccessDeniedException("You do not have permission to update this person.");
-        }
-
         entity.setHidden(true);
         personRepository.save(entity);
-        personDTO.setId(null); // new record will get a new ID
-        PersonEntity newEntity = personMapper.toEntity(personDTO);
-        newEntity.setOwner(entity.getOwner());
-        PersonEntity saved = personRepository.save(newEntity);
+        personDTO.setId(null);
+        entity = personMapper.toEntity(personDTO);
+        PersonEntity saved = personRepository.save(entity);
 
         return personMapper.toDTO(saved);
     }
 
     /**
-     * Returns sales statistics for each person.
-     * <p>
-     * Gets aggregated data (such as total sales) from the database using a query in the repository
-     * and converts it to a list of DTO objects for further processing or display.
+     * Vrací statistiky tržeb jednotlivých osob.
+     * *
+     * Získá agregovaná data (např. součet tržeb) z databáze pomocí dotazu v repository
+     * a převede je do seznamu DTO objektů pro další zpracování nebo zobrazení.
      *
-     * @return - list of person statistics with ID, name, and total sales
+     * @return -  seznam statistik osob s ID, jménem a celkovými tržbami
      */
     @Override
-    public List<PersonStatisticDTO> getPersonStatistic() {
+    public List<PersonStatisticDTO> getPersonStatistic(){
         List<Tuple> tuples;
         tuples = personRepository.getPersonSumPrice();
 
@@ -193,14 +178,14 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Finds a person by ID.
-     * <p>
-     * If the person with the given ID does not exist, throws a {@link NotFoundException}.
-     * Used as a helper method to centralize person loading from the database.
+     * Vyhledá osobu podle ID.
+     * *
+     * Pokud osoba s daným ID neexistuje, vyvolá výjimku {@link NotFoundException}.
+     * Slouží jako pomocná metoda pro centralizaci načítání osob z databáze.
      *
-     * @param id ID of the person to find
-     * @return person entity
-     * @throws NotFoundException if the person was not found
+     * @param id ID hledané osoby
+     * @return entita osoby
+     * @throws NotFoundException pokud osoba nebyla nalezena
      */
     private PersonEntity fetchPersonById(long id) {
         return personRepository.findById(id)

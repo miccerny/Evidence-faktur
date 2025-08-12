@@ -10,9 +10,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
- * Entity representing an invoice in the database.
- * <p>
- * Maps to the "invoice" table and contains invoice data used in the application.
+ * Entita reprezentující fakturu v databázi.
+ * *
+ * Mapuje se na tabulku "invoice" a obsahuje údaje
+ * o fakturách používané v aplikaci.
  */
 @Entity(name="invoice")
 @Getter

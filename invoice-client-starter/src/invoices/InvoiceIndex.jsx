@@ -3,7 +3,7 @@ import { apiDelete, apiGet } from "../utils/api";
 import InvoiceTable from "./InvoiceTable";
 import InvoiceFilter from "./InvoiceFilter";
 import FlashMessage from "../components/FlashMessage";
-import { useSession } from "../contexts/session";
+import {useSession} from "../contexts/session";
 
 
 const ITEMS_PER_PAGE = 5;
@@ -11,7 +11,7 @@ const ITEMS_PER_PAGE = 5;
 const InvoiceIndex = () => {
     // Stav pro seznam faktur
     const [invoices, setInvoices] = useState([]);
-    const { session } = useSession();
+    const {session} = useSession();
     const [loading, setLoading] = useState(false);
     // Stav pro seznam dodavatelů (pro filtr)
     const [sellerListSatte, setSellerList] = useState([]);
@@ -68,35 +68,25 @@ const InvoiceIndex = () => {
 
     // useEffect načte faktury a osoby při změně stránky
     useEffect(() => {
-        if (session.status !== "authenticated") {
+        if(session.status === "authenticated"){
             setLoading(true);
-
-            // Načtení faktur s parametry stránkování
-            Promise.all([apiGet("/api/invoices", { page, size: 1000 }),
-            apiGet("/api/persons")
-            ])
-                .then(([invoicesData, personData]) => {
-                    setInvoices(invoicesData.content);
-                    setTotalPages(invoicesData.totalPages);
-                    setTotalElements(invoicesData.totalElements);
-
-
-                    console.log("Persons:", personData);
-                    setSellerList(personData.content);
-                    setBuyerList(personData.content);
-                })
-                .finally(() => setLoading(false));
-        }
+        
+        // Načtení faktur s parametry stránkování
+        apiGet("/api/invoices", { page, size: 1000 })
+            .then((data) => {
+                setInvoices(data.content);
+                setTotalPages(data.totalPages);
+                setTotalElements(data.totalElements);
+            });
+        apiGet("/api/persons").then((data) => {
+            console.log("Persons:", data);
+            setSellerList(data.content);
+            setBuyerList(data.content);
+        })
+        .finally(() => setLoading(false));
+    }
+    
     }, [page, session]);
-
-    if (session.status === "unauthenticated") {
-        return <p>Pro zobrazení faktur se musíte přihlásit.</p>;
-    }
-
-    if (loading) {
-        return <p>Načítám faktury...</p>;
-    }
-
 
     // Funkce pro změnu hodnoty ve filtru (při změně vstupního pole)
     const handleChange = (e) => {

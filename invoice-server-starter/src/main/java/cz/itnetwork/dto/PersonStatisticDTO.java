@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * DTO class for transferring statistical data about persons.
- * <p>
- * Contains summary information such as the person's ID, name,
- * and the total income (sales) associated with that person.
+ * DTO třída pro přenos statistických údajů o osobách.
+ * *
+ * Obsahuje souhrnné informace jako ID osoby, jméno a
+ * celkový příjem (tržby) spojené s danou osobou.
  */
 @Data
 @AllArgsConstructor

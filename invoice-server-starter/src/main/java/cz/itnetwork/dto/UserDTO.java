@@ -7,14 +7,12 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
 import java.util.List;
 
-/**
- * Data Transfer Object (DTO) for user information.
- * <p>
- * Used to transfer user data between different layers of the application,
- * for example between the frontend and backend.
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

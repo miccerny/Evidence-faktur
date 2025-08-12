@@ -4,10 +4,10 @@ import cz.itnetwork.constant.InvoiceStatus;
 import lombok.Data;
 
 /**
- * Class used for filtering invoices by various criteria.
- * <p>
- * Contains fields that allow you to specify parameters for searching
- * and filtering invoices in the application.
+ * Třída sloužící k filtrování faktur podle různých kritérií.
+ * *
+ * Obsahuje pole, která umožňují zadat parametry pro vyhledávání
+ * a filtrování faktur v aplikaci.
  */
 @Data
 public class InvoiceFilter {
