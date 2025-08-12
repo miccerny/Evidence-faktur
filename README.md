@@ -1,7 +1,8 @@
 # Evidence faktur
  Evidence faktur včetně prodejce a kupujícího
 
-> Aktuální verze projektu je dostupná ve větvi `Login-Registration`, kde probíhá přidání funkce registrace uživatelů a náhled jejich faktur
+> Aktuální verze projektu je dostupná ve větvi `Login-Registration-authentication`
+> Pracuji na větvi `Login-Registration-autorization` - kde probíhá implementace zobrazení osob a faktur dle přihlášeného typu uživatele (anonymní, přihlášený, admin)
 
 ## Použité technologie
 - **Java 17** - hlavní jazyk projektu.
@@ -38,6 +39,22 @@
 4. Instalace node.js
 5. Instalace knihoven node_modules
 6. Spustit
+
+## Ukázky aplikace
+### Náhled faktur
+![Evidence faktur - screenshot/Osoby, firmy.PNG](https://github.com/miccerny/Evidence-faktur/blob/Login-Registration-authentication/Evidence%20faktur%20-%20screenshot/N%C3%A1hled%20faktur.PNG)
+
+### Náhled osob či firem
+![https://github.com/miccerny/Evidence-faktur/blob/Login-Registration-authentication/Evidence%20faktur%20-%20screenshot/Osoby%2C%20firmy.PNG](https://github.com/miccerny/Evidence-faktur/blob/Login-Registration-authentication/Evidence%20faktur%20-%20screenshot/Osoby,%20firmy.PNG?raw=true)
+
+### Přihlášení
+![https://github.com/miccerny/Evidence-faktur/blob/Login-Registration-authentication/Evidence%20faktur%20-%20screenshot/P%C5%99ihl%C3%A1%C5%A1en%C3%AD.PNG?raw=true](https://github.com/miccerny/Evidence-faktur/blob/Login-Registration-authentication/Evidence%20faktur%20-%20screenshot/P%C5%99ihl%C3%A1%C5%A1en%C3%AD.PNG?raw=true)
+
+### Statistika faktur
+![https://github.com/miccerny/Evidence-faktur/blob/Login-Registration-authentication/Evidence%20faktur%20-%20screenshot/Sattistika%20faktur.PNG?raw=true](https://github.com/miccerny/Evidence-faktur/blob/Login-Registration-authentication/Evidence%20faktur%20-%20screenshot/Sattistika%20faktur.PNG?raw=true)
+
+### Statistika osob
+![https://github.com/miccerny/Evidence-faktur/blob/Login-Registration-authentication/Evidence%20faktur%20-%20screenshot/Sattistika%20osob.PNG?raw=true](https://github.com/miccerny/Evidence-faktur/blob/Login-Registration-authentication/Evidence%20faktur%20-%20screenshot/Sattistika%20osob.PNG?raw=true)
 
 ##Poznámky
 Ukázky aplikace ještě dodám
